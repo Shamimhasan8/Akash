@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { useAkash, useVoice } from "@/lib/akash-context";
-import { SPACE_FACTS } from "@/lib/akash-data";
+import { useAkash, useVoice, useSpeechRecognition } from "@/lib/akash-context";
 import { Button } from "@/components/ui/button";
 import {
-  Volume2, Square, Send, Sparkles, User, Zap, Database, AlertCircle, Mic,
+  Volume2, Square, Send, Sparkles, User, Zap, Database, AlertCircle, Mic, MicOff,
 } from "lucide-react";
 
 type Msg = {
@@ -28,23 +27,24 @@ interface AskApiResponse {
   fallbackReason?: string;
 }
 
-const FALLBACK_META: Record<string, { icon: typeof Zap; label: string; color: string; bg: string }> = {
-  live: { icon: Zap, label: "Live Gemma", color: "#d6ba65", bg: "rgba(214,186,101,0.12)" },
-  cache: { icon: Zap, label: "Cached", color: "#4da8da", bg: "rgba(77,168,218,0.12)" },
-  curated: { icon: Database, label: "Curated", color: "#8b6ff0", bg: "rgba(139,111,240,0.12)" },
-  polite: { icon: AlertCircle, label: "Fallback", color: "#6a8ba8", bg: "rgba(106,139,168,0.12)" },
+const FALLBACK_META: Record<string, { icon: typeof Zap; label: string; color: string }> = {
+  live: { icon: Zap, label: "Gemma 4", color: "#d97706" },
+  cache: { icon: Zap, label: "Cached", color: "#0284c7" },
+  curated: { icon: Database, label: "Curated", color: "#6366f1" },
+  polite: { icon: AlertCircle, label: "Fallback", color: "#6e6e73" },
 };
 
 export function AskMode() {
   const { lang, t } = useAkash();
   const { speak, stop } = useVoice();
+  const { isListening, startListening, stopListening, error: micError } = useSpeechRecognition();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
       text: t(
-        "নমস্কার! আমি আকাশ — তোমার মহাকাশ বন্ধু। যেকোনো প্রশ্ন করো, আমি বাংলায় বা ইংরেজিতে উত্তর দেব! 🚀",
-        "Hello! I'm AKASH — your space friend! Ask me anything about space and I'll answer in Bangla or English. 🚀"
+        "নমস্কার! আমি আকাশ — তোমার মহাকাশ বন্ধু। বাংলা, English বা Banglish-এ প্রশ্ন করো! 🚀",
+        "Hello! I'm AKASH — your space friend! Ask me anything in Bangla, English, or Banglish! 🚀"
       ),
       fallback: "curated",
       source: "AKASH",
@@ -60,9 +60,25 @@ export function AskMode() {
   }, [messages, loading]);
 
   const suggestions = useMemo(
-    () => SPACE_FACTS.slice(0, 5).map((f) => (lang === "bn" ? f.question_bn : f.question_en)),
+    () => [
+      lang === "bn" ? "সূর্য কী?" : "What is the Sun?",
+      lang === "bn" ? "surjo ki?" : "surjo ki?",
+      lang === "bn" ? "চাঁদ কেন আকার বদলায়?" : "Why does the Moon change shape?",
+      lang === "bn" ? "kemon acho?" : "kemon acho?",
+      lang === "bn" ? "কৃষ্ণ গহ্বর কী?" : "What is a black hole?",
+    ],
     [lang]
   );
+
+  const handleMicClick = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening(lang, (text) => {
+        setInput(text);
+      });
+    }
+  };
 
   const send = useCallback(
     async (text: string) => {
@@ -130,9 +146,9 @@ export function AskMode() {
   };
 
   return (
-    <div className="flex flex-col max-w-3xl mx-auto w-full" style={{ height: "calc(100vh - 380px)", minHeight: "420px" }}>
-      {/* Chat messages */}
-      <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-5 pb-2" style={{ scrollbarWidth: "thin" }}>
+    <div className="flex flex-col max-w-3xl mx-auto w-full" style={{ height: "calc(100vh - 380px)", minHeight: "440px" }}>
+      {/* Messages Scroll View */}
+      <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-4 pb-3" style={{ scrollbarWidth: "thin" }}>
         {messages.map((m, i) => {
           const id = `msg-${i}`;
           const meta = m.fallback ? FALLBACK_META[m.fallback] : null;
@@ -140,91 +156,74 @@ export function AskMode() {
           const isUser = m.role === "user";
 
           return (
-            <div key={id} className={`flex gap-3 akash-fade-up ${isUser ? "flex-row-reverse" : ""}`}
-              style={{ animationDelay: `${i * 0.04}s` }}>
+            <div key={id} className={`flex gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
               {/* Avatar */}
               <div
-                className="flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-bold"
+                className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-sm"
                 style={isUser
-                  ? { background: "linear-gradient(135deg, rgba(94,58,202,0.3), rgba(139,111,240,0.2))", border: "1px solid rgba(139,111,240,0.4)" }
-                  : { background: "linear-gradient(135deg, rgba(214,186,101,0.25), rgba(245,224,138,0.15))", border: "1px solid rgba(214,186,101,0.5)" }
+                  ? { background: "#1d1d1f", border: "1px solid #1d1d1f", color: "#ffffff" }
+                  : { background: "#ffffff", border: "1px solid rgba(0,0,0,0.12)", color: "#d97706" }
                 }
               >
-                {isUser
-                  ? <User className="w-4.5 h-4.5" style={{ color: "#8b6ff0" }} />
-                  : <Sparkles className="w-4.5 h-4.5" style={{ color: "#f5e08a" }} />
-                }
+                {isUser ? <User className="w-4 h-4 text-white" /> : <Sparkles className="w-4 h-4 text-[#d97706]" />}
               </div>
 
               {/* Bubble */}
               <div
-                className="rounded-2xl px-4 py-3.5 max-w-[85%] relative"
+                className="rounded-3xl px-5 py-4 max-w-[85%] relative transition-all"
                 style={isUser
                   ? {
-                      background: "linear-gradient(135deg, rgba(94,58,202,0.18), rgba(94,58,202,0.08))",
-                      border: "1px solid rgba(139,111,240,0.3)",
-                      backdropFilter: "blur(20px)",
+                      background: "#1d1d1f",
+                      color: "#ffffff",
+                      boxShadow: "0 6px 24px rgba(0,0,0,0.08)",
                     }
                   : {
-                      background: "rgba(255,255,255,0.035)",
-                      border: "1px solid rgba(214,186,101,0.18)",
-                      backdropFilter: "blur(24px)",
-                      boxShadow: "0 4px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)",
+                      background: "#ffffff",
+                      color: "#1d1d1f",
+                      border: "1px solid rgba(0,0,0,0.08)",
+                      boxShadow: "0 8px 30px rgba(0,0,0,0.04)",
                     }
                 }
               >
-                <p className={`text-[0.9rem] leading-relaxed text-akash-star ${!isUser ? "font-bn" : ""}`}>
+                <p className={`text-[0.93rem] leading-relaxed ${isUser ? "text-white" : "text-[#1d1d1f]"} ${!isUser ? "font-bn" : ""}`}>
                   {m.text}
                 </p>
 
                 {!isUser && (
-                  <div className="mt-3 pt-2.5 flex items-center justify-between gap-2 flex-wrap"
-                    style={{ borderTop: "1px solid rgba(214,186,101,0.15)" }}>
-                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider flex-wrap">
+                  <div className="mt-3 pt-2.5 flex items-center justify-between gap-2 border-t border-black/5 flex-wrap">
+                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-[#6e6e73]">
                       {meta && MetaIcon && (
-                        <span
-                          className="flex items-center gap-1 px-2 py-0.5 rounded-full font-bold"
-                          style={{ color: meta.color, background: meta.bg, fontSize: "9px" }}
-                        >
+                        <span className="flex items-center gap-1 font-bold" style={{ color: meta.color }}>
                           <MetaIcon className="w-2.5 h-2.5" />
                           {meta.label}
                         </span>
                       )}
                       {m.latencyMs !== undefined && (
-                        <span style={{ color: "#6a8ba8" }}>⚡ {(m.latencyMs / 1000).toFixed(1)}s</span>
+                        <span>⚡ {(m.latencyMs / 1000).toFixed(1)}s</span>
                       )}
                       {m.source && (
-                        <span className="truncate max-w-[160px]" style={{ color: "#6a8ba8" }}>
-                          · {m.source}
-                        </span>
+                        <span className="truncate max-w-[150px]">· {m.source}</span>
                       )}
                     </div>
 
-                    {/* Voice button */}
+                    {/* Audio Listen Trigger */}
                     <button
                       onClick={() => toggleSpeak(m.text, id)}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all duration-200 text-[10px] font-bold"
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-semibold transition-all duration-200 shadow-sm"
                       style={speakingId === id
-                        ? { background: "rgba(214,186,101,0.2)", color: "#f5e08a", border: "1px solid rgba(214,186,101,0.5)" }
-                        : { background: "rgba(255,255,255,0.04)", color: "#6a8ba8", border: "1px solid rgba(255,255,255,0.08)" }
+                        ? { background: "#1d1d1f", color: "#ffffff" }
+                        : { background: "#f5f5f7", border: "1px solid rgba(0,0,0,0.08)", color: "#1d1d1f" }
                       }
-                      aria-label={t("শোনাও", "Play audio")}
                     >
                       {speakingId === id ? (
                         <>
-                          <div className="akash-voice-wave flex items-center gap-px" style={{ color: "#f5e08a" }}>
-                            <span style={{ height: "10px" }} />
-                            <span style={{ height: "14px" }} />
-                            <span style={{ height: "8px" }} />
-                            <span style={{ height: "12px" }} />
-                            <span style={{ height: "6px" }} />
-                          </div>
-                          <Square className="w-2.5 h-2.5" />
+                          <Square className="w-2.5 h-2.5 text-white" />
+                          <span className="text-white">{t("থামাও", "Stop")}</span>
                         </>
                       ) : (
                         <>
-                          <Volume2 className="w-3 h-3" />
-                          {t("শোনো", "Listen")}
+                          <Volume2 className="w-3 h-3 text-[#d97706]" />
+                          <span>{t("শোনো", "Listen")}</span>
                         </>
                       )}
                     </button>
@@ -235,20 +234,17 @@ export function AskMode() {
           );
         })}
 
-        {/* Loading */}
         {loading && (
           <div className="flex gap-3">
-            <div className="flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, rgba(214,186,101,0.25), rgba(245,224,138,0.15))", border: "1px solid rgba(214,186,101,0.5)" }}>
-              <Sparkles className="w-4.5 h-4.5 animate-spin" style={{ color: "#f5e08a" }} />
+            <div className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center bg-white border border-black/10 text-[#d97706] shadow-sm">
+              <Sparkles className="w-4 h-4 animate-spin" />
             </div>
-            <div className="rounded-2xl px-5 py-4"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(214,186,101,0.18)", backdropFilter: "blur(24px)" }}>
-              <div className="akash-loading-dots flex items-center gap-1 mb-2">
+            <div className="rounded-3xl px-5 py-4 bg-white border border-black/10 shadow-sm">
+              <div className="akash-loading-dots flex items-center gap-1 mb-1">
                 <span /><span /><span />
               </div>
-              <p className="text-[10px] uppercase tracking-widest font-bold" style={{ color: "#6a8ba8" }}>
-                {t("আকাশ ভাবছে...", "AKASH is thinking...")}
+              <p className="text-[10px] uppercase tracking-widest text-[#6e6e73] font-medium">
+                {t("গেমা ভাবছে...", "Gemma is thinking...")}
               </p>
             </div>
           </div>
@@ -256,59 +252,71 @@ export function AskMode() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Error banner */}
-      {error && (
-        <div className="my-2 px-3 py-2 rounded-xl text-xs font-bn"
-          style={{ background: "rgba(232,93,122,0.08)", border: "1px solid rgba(232,93,122,0.25)", color: "#e85d7a" }}>
-          {t("সর্বশেষ অনুরোধে ত্রুটি — কিউরেটেড উত্তর দেখানো হচ্ছে।", "Last request errored — showing fallback.")}
+      {/* Mic Active Status */}
+      {isListening && (
+        <div className="my-2 px-4 py-2 rounded-full text-xs font-bn flex items-center justify-between bg-white border border-red-200 text-red-600 shadow-sm apple-pulse">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+            <span>{t("শুনছি... কথা বলো", "Listening... speak now")} ({lang === "bn" ? "বাংলা/Banglish" : "English"})</span>
+          </div>
+          <button onClick={stopListening} className="underline text-[10px] font-mono">
+            {t("থামাও", "Stop")}
+          </button>
         </div>
       )}
 
-      {/* Suggestions */}
+      {/* Suggestion Chips */}
       <div className="flex flex-wrap gap-2 my-3">
         {suggestions.map((s, i) => (
           <button
             key={i}
             onClick={() => send(s)}
             disabled={loading}
-            className="akash-chip disabled:opacity-40 disabled:cursor-not-allowed"
+            className="apple-chip disabled:opacity-40"
           >
             {s}
           </button>
         ))}
       </div>
 
-      {/* Input bar */}
+      {/* Apple White Input Form */}
       <form
         onSubmit={(e) => { e.preventDefault(); send(input); }}
-        className="flex gap-2.5"
+        className="flex gap-2"
       >
         <div className="flex-1 relative">
-          <Mic className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-            style={{ color: "rgba(106,139,168,0.5)" }} />
+          <button
+            type="button"
+            onClick={handleMicClick}
+            className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full transition-all duration-200 hover:scale-105"
+            style={isListening
+              ? { background: "rgba(239, 68, 68, 0.1)", color: "#ef4444" }
+              : { background: "transparent", color: "#6e6e73" }
+            }
+            title={t("বাংলা, English বা Banglish-এ কথা বলো", "Speak in Bangla, English, or Banglish")}
+          >
+            {isListening ? <MicOff className="w-4 h-4 animate-spin text-red-500" /> : <Mic className="w-4 h-4 hover:text-[#1d1d1f]" />}
+          </button>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={t("মহাকাশ নিয়ে প্রশ্ন করো...", "Ask me anything about space...")}
+            placeholder={isListening ? t("শুনছি... বলো...", "Listening... speak...") : t("মহাকাশ নিয়ে প্রশ্ন করো (Bangla / English / Banglish)...", "Ask in Bangla, English, or Banglish...")}
             disabled={loading}
-            className="w-full h-12 pl-10 pr-4 text-sm font-bn akash-input outline-none"
+            className="w-full h-12 pl-11 pr-4 text-sm font-bn apple-input outline-none"
           />
         </div>
         <Button
           type="submit"
           size="icon"
           disabled={!input.trim() || loading}
-          className="h-12 w-12 rounded-xl font-bold flex-shrink-0 transition-all duration-300"
+          className="h-12 w-12 rounded-full font-bold flex-shrink-0 transition-all duration-300 shadow-md"
           style={{
-            background: input.trim() && !loading
-              ? "linear-gradient(135deg, #d6ba65, #f5e08a)"
-              : "rgba(255,255,255,0.06)",
-            color: input.trim() && !loading ? "#030510" : "#6a8ba8",
+            background: input.trim() && !loading ? "#1d1d1f" : "#e5e5ea",
+            color: input.trim() && !loading ? "#ffffff" : "#8e8e93",
             border: "none",
-            boxShadow: input.trim() && !loading ? "0 0 20px rgba(214,186,101,0.4)" : "none",
           }}
         >
-          <Send className="w-4.5 h-4.5" />
+          <Send className="w-4 h-4" />
         </Button>
       </form>
     </div>

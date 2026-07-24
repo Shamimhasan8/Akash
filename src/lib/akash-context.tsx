@@ -106,3 +106,68 @@ export function useVoice() {
   return { speak, stop };
 }
 
+/** Web Speech API Recognition (Speech to Text for Bangla & English). */
+export function useSpeechRecognition() {
+  const [isListening, setIsListening] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const startListening = useCallback((lang: Lang = "bn", onResult?: (text: string) => void) => {
+    if (typeof window === "undefined") return;
+
+    const SpeechRecognitionClass =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognitionClass) {
+      setError("Speech recognition is not supported in this browser. Please use Google Chrome or Microsoft Edge.");
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognitionClass();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = lang === "bn" ? "bn-BD" : "en-US";
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        setError(null);
+        setTranscript("");
+      };
+
+      recognition.onresult = (event: any) => {
+        let current = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          current += event.results[i][0].transcript;
+        }
+        setTranscript(current);
+        if (onResult && current.trim()) {
+          onResult(current);
+        }
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn("Speech recognition error:", event.error);
+        setError(event.error);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognition.start();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to start voice recognition");
+      setIsListening(false);
+    }
+  }, []);
+
+  const stopListening = useCallback(() => {
+    setIsListening(false);
+  }, []);
+
+  return { isListening, transcript, error, startListening, stopListening };
+}
+
+

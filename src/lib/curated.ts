@@ -29,8 +29,79 @@ export interface CuratedMatch {
  *  3. Topic name match — looks up English/Bangla names from TOPICS array
  */
 export function findCuratedAnswer(question: string, lang: "bn" | "en" = "bn"): CuratedMatch {
-  const q = question.toLowerCase().trim();
+  const q = question.toLowerCase().trim().replace(/[?!.,]/g, "");
   if (!q) return { found: false, answer: "", source: "" };
+
+  // 0. Greeting & Identity match (supports Bangla, English, and Banglish)
+  const greetings = [
+    "hi", "hello", "hey", "hallo", "হাই", "হ্যালো", "হ্যাল্লো", "নমস্কার", "আসসালামু আলাইকুম",
+    "kemon acho", "kemon achen", "ki khobor", "kemon asen", "kemon aso", "kehabar", "কেমন আছো", "কেমন আছেন", "কি খবর"
+  ];
+  const identity = [
+    "who are you", "who are u", "what is your name", "who made you",
+    "tumi ke", "tomar nam ki", "tomar naam ki", "apni ke", "তুমি কে", "তোমার নাম কি", "তোমার নাম কী"
+  ];
+
+  if (greetings.includes(q) || greetings.some(g => q === g || q.startsWith(g + " "))) {
+    return {
+      found: true,
+      answer: lang === "bn"
+        ? "নমস্কার! আমি আকাশ (AKASH) — তোমার মহাকাশ বন্ধু! 🚀 তুমি যেকোনো ভাষায় (বাংলা, English বা Banglish-এ) প্রশ্ন করতে পারো — যেমন 'সূর্য কী?', 'surjo ki?', 'চাঁদ কেন আকার বদলায়?', বা 'What is the Sun?'"
+        : "Hello! I'm AKASH — your space friend! 🚀 You can ask me questions in Bangla, English, or Banglish — like 'What is the Sun?', 'surjo ki?', or 'Why does the Moon change shape?'",
+      source: "AKASH Space Tutor",
+      topic: "sun",
+      factId: "greeting",
+    };
+  }
+
+  if (identity.some(i => q.includes(i))) {
+    return {
+      found: true,
+      answer: lang === "bn"
+        ? "আমি আকাশ (AKASH) — শিশুদের জন্য তৈরি একটি দ্বিভাষিক মহাকাশ শিক্ষক। আমি গেমা (Gemma AI) দ্বারা চালিত, এবং আমার কাজ হলো তোমাকে মহাকাশের বিস্ময়কর জিনিসগুলো সহজ ভাষায় শেখানো!"
+        : "I am AKASH — a space tutor for kids. Powered by Gemma AI, my mission is to teach you the wonders of space in simple, fun language!",
+      source: "AKASH Space Tutor",
+      topic: "earth",
+      factId: "identity",
+    };
+  }
+
+  // 0.5. Banglish to Space Topic dictionary mapping
+  const banglishMap: Record<string, SpaceTopic> = {
+    surjo: "sun", shurjo: "sun", surjo: "sun",
+    chad: "moon", chand: "moon", caad: "moon",
+    prithibi: "earth", porthibi: "earth", protibi: "earth",
+    mongol: "mars", mongol: "mars",
+    brihosgoti: "jupiter", brihosgoti: "jupiter", jupiter: "jupiter",
+    shoni: "saturn", soni: "saturn", saturn: "saturn",
+    shukro: "venus", sukro: "venus", venus: "venus",
+    budh: "mercury", mercury: "mercury",
+    nepchun: "neptune", neptune: "neptune",
+    yuranus: "uranus", uranus: "uranus",
+    krishna: "black_hole", gahbar: "black_hole", blackhole: "black_hole",
+    chayapoth: "galaxy", galaxi: "galaxy", galaxy: "galaxy",
+    tara: "star", nokhottro: "star", star: "star",
+    dhumketu: "comet", comet: "comet",
+    ulka: "meteor", meteor: "meteor",
+    roket: "rocket", rocket: "rocket",
+    mohakashchari: "astronaut", astronaut: "astronaut",
+    iss: "iss", bigbang: "big_bang", grohon: "eclipse", eclipse: "eclipse",
+  };
+
+  for (const [kw, topic] of Object.entries(banglishMap)) {
+    if (q.includes(kw)) {
+      const fact = SPACE_FACTS.find((f) => f.topic === topic);
+      if (fact) {
+        return {
+          found: true,
+          answer: lang === "bn" ? fact.answer_bn : fact.answer_en,
+          source: fact.source,
+          topic: fact.topic,
+          factId: fact.id,
+        };
+      }
+    }
+  }
 
   // 1. Keyword match
   for (const fact of SPACE_FACTS) {

@@ -217,110 +217,96 @@ async function callHFInference(
   const repetitionPenalty = options.repetitionPenalty ?? 1.15;
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 
-  // Build request body (OpenAI-compatible format)
-  const body = {
-    model: HF_MODEL,
-    messages: messages.map((m) => ({ role: m.role, content: m.content })),
-    max_tokens: maxTokens,
-    temperature,
-    top_p: topP,
-    repetition_penalty: repetitionPenalty,
-    stream: false,
-  };
+  // Official Gemma models allowed by competition rules
+  const gemmaModels = [
+    HF_MODEL,
+    "google/gemma-4-12b-it",
+    "google/gemma-3-12b-it",
+    "google/gemma-2-9b-it",
+  ].filter((v, i, a) => a.indexOf(v) === i); // unique
 
-  // Endpoint: HF's OpenAI-compatible chat completions
-  const url = `https://api-inference.huggingface.co/models/${HF_MODEL}/v1/chat/completions`;
-
-  // Retry loop
-  const maxRetries = 3;
   let lastError: HuggingFaceError | null = null;
 
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    if (attempt > 0) {
-      const waitMs = Math.min(1000 * 2 ** attempt + Math.random() * 500, 8000);
-      console.warn(`  ↻ Retry ${attempt}/${maxRetries} in ${waitMs.toFixed(0)}ms...`);
-      await new Promise((r) => setTimeout(r, waitMs));
-    }
+  for (const currentModel of gemmaModels) {
+    const body = {
+      model: currentModel,
+      messages: messages.map((m) => ({ role: m.role, content: m.content })),
+      max_tokens: maxTokens,
+      temperature,
+      top_p: topP,
+      repetition_penalty: repetitionPenalty,
+      stream: false,
+    };
 
-    // Timeout controller
-    const controller = new AbortController();
-    const timeoutHandle = setTimeout(() => controller.abort(), timeoutMs);
+    // Endpoints: HF v1 chat completions & legacy router
+    const urls = [
+      `https://api-inference.huggingface.co/models/${currentModel}/v1/chat/completions`,
+      `https://router.huggingface.co/hf-inference/v1/chat/completions`,
+    ];
 
-    const startMs = Date.now();
-    try {
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${HF_TOKEN}`,
-      };
-      if (HF_PROVIDER !== "auto") {
-        headers["X-HF-Provider"] = HF_PROVIDER;
-      }
+    for (const url of urls) {
+      const controller = new AbortController();
+      const timeoutHandle = setTimeout(() => controller.abort(), timeoutMs);
+      const startMs = Date.now();
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(body),
-        signal: controller.signal,
-      });
+      try {
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${HF_TOKEN}`,
+        };
+        if (HF_PROVIDER !== "auto") {
+          headers["X-HF-Provider"] = HF_PROVIDER;
+        }
 
-      clearTimeout(timeoutHandle);
-      const latencyMs = Date.now() - startMs;
+        const response = await fetch(url, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(body),
+          signal: controller.signal,
+        });
 
-      // Handle non-2xx
-      if (!response.ok) {
-        const errText = await response.text().catch(() => "");
-        // 429 = rate limit (retry), 503 = model loading (retry), 5xx = transient (retry)
-        const retryable = response.status === 429 || response.status === 503 || response.status >= 500;
+        clearTimeout(timeoutHandle);
+        const latencyMs = Date.now() - startMs;
+
+        if (!response.ok) {
+          const errText = await response.text().catch(() => "");
+          lastError = new HuggingFaceError(
+            `HF API (${currentModel}) ${response.status}: ${errText.slice(0, 200)}`,
+            response.status,
+            true
+          );
+          continue;
+        }
+
+        const data = await response.json();
+        const text = data?.choices?.[0]?.message?.content ?? "";
+        if (!text) continue;
+
+        return {
+          text: cleanResponse(text),
+          latencyMs,
+          cached: false,
+          model: currentModel,
+          usage: data?.usage
+            ? {
+                promptTokens: data.usage.prompt_tokens,
+                completionTokens: data.usage.completion_tokens,
+              }
+            : undefined,
+        };
+      } catch (err) {
+        clearTimeout(timeoutHandle);
+        const isAbort = err instanceof Error && err.name === "AbortError";
         lastError = new HuggingFaceError(
-          `HF API ${response.status}: ${errText.slice(0, 300)}`,
-          response.status,
-          retryable
-        );
-        if (!retryable) break; // 4xx (except 429) — don't retry
-        console.warn(`  ⚠ HF ${response.status} (retryable): ${errText.slice(0, 150)}`);
-        continue;
-      }
-
-      // Parse JSON
-      const data = await response.json();
-      const text = data?.choices?.[0]?.message?.content ?? "";
-      if (!text) {
-        lastError = new HuggingFaceError(
-          "HF API returned empty response",
-          response.status,
+          isAbort ? `Timeout after ${timeoutMs}ms for ${currentModel}` : (err instanceof Error ? err.message : String(err)),
+          isAbort ? 408 : undefined,
           true
         );
-        continue;
       }
-
-      return {
-        text: cleanResponse(text),
-        latencyMs,
-        cached: false,
-        model: HF_MODEL,
-        usage: data?.usage
-          ? {
-              promptTokens: data.usage.prompt_tokens,
-              completionTokens: data.usage.completion_tokens,
-            }
-          : undefined,
-      };
-    } catch (err) {
-      clearTimeout(timeoutHandle);
-      const isAbort = err instanceof Error && err.name === "AbortError";
-      lastError = new HuggingFaceError(
-        isAbort ? `Request timed out after ${timeoutMs}ms` : (err as Error).message,
-        isAbort ? 408 : 0,
-        true,
-        err
-      );
-      console.warn(`  ⚠ Attempt ${attempt + 1} failed: ${lastError.message}`);
-      continue;
     }
   }
 
-  // All retries exhausted
-  throw lastError ?? new HuggingFaceError("Unknown HF inference failure");
+  throw lastError ?? new HuggingFaceError("All Gemma inference model endpoints failed or were unreachable");
 }
 
 // ───────────────────────────────────────────────────────────────
@@ -448,8 +434,12 @@ export function getConfig() {
 
 export const AKASH_SYSTEM_PROMPT = `You are AKASH (আকাশ), a kind space tutor for children aged 7-14. You explain space science in simple Bangla.
 
+LANGUAGE SKILLS:
+- You fluently understand BANGLA (বাংলা), ENGLISH, and BANGLISH (Bangla written in Latin script like 'surjo ki?', 'chad keno boro hoy?', 'kemon acho?').
+- If the user asks in Bangla or Banglish, answer in clear, friendly BANGLA (Bengali script) using simple class-5 reading level.
+
 ABSOLUTE RULES (never violate):
-1. Always respond in BANGLA (Bengali script). Use simple class-5 reading level.
+1. Always respond in BANGLA (Bengali script).
 2. On first mention of a scientific term, include the English term in parentheses. Example: কৃষ্ণ গহ্বর (black hole) হলো...
 3. Keep answers to 1-3 sentences. Be warm, encouraging, curious.
 4. NEVER mention scary, violent, sexual, or adult content. If a question hints at any, gently redirect.
