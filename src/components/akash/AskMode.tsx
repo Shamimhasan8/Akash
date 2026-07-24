@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useAkash, useVoice } from "@/lib/akash-context";
 import { SPACE_FACTS } from "@/lib/akash-data";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
-  Volume2, Square, Send, Sparkles, User, Zap, Database, AlertCircle,
+  Volume2, Square, Send, Sparkles, User, Zap, Database, AlertCircle, Mic,
 } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 type Msg = {
   role: "user" | "assistant";
@@ -30,11 +28,11 @@ interface AskApiResponse {
   fallbackReason?: string;
 }
 
-const FALLBACK_META: Record<string, { icon: typeof Zap; label: string; color: string }> = {
-  live: { icon: Zap, label: "Live Gemma", color: "text-akash-gold" },
-  cache: { icon: Zap, label: "Cached", color: "text-akash-cyan" },
-  curated: { icon: Database, label: "Curated", color: "text-akash-purple-bright" },
-  polite: { icon: AlertCircle, label: "Fallback", color: "text-akash-muted" },
+const FALLBACK_META: Record<string, { icon: typeof Zap; label: string; color: string; bg: string }> = {
+  live: { icon: Zap, label: "Live Gemma", color: "#d6ba65", bg: "rgba(214,186,101,0.12)" },
+  cache: { icon: Zap, label: "Cached", color: "#4da8da", bg: "rgba(77,168,218,0.12)" },
+  curated: { icon: Database, label: "Curated", color: "#8b6ff0", bg: "rgba(139,111,240,0.12)" },
+  polite: { icon: AlertCircle, label: "Fallback", color: "#6a8ba8", bg: "rgba(106,139,168,0.12)" },
 };
 
 export function AskMode() {
@@ -45,8 +43,8 @@ export function AskMode() {
     {
       role: "assistant",
       text: t(
-        "নমস্কার! আমি আকাশ — তোমার মহাকাশ বন্ধু। যেকোনো প্রশ্ন করো, আমি বাংলায় উত্তর দেব।",
-        "Hello! I'm AKASH — your space friend. Ask me anything, and I'll answer in Bangla or English."
+        "নমস্কার! আমি আকাশ — তোমার মহাকাশ বন্ধু। যেকোনো প্রশ্ন করো, আমি বাংলায় বা ইংরেজিতে উত্তর দেব! 🚀",
+        "Hello! I'm AKASH — your space friend! Ask me anything about space and I'll answer in Bangla or English. 🚀"
       ),
       fallback: "curated",
       source: "AKASH",
@@ -55,9 +53,14 @@ export function AskMode() {
   const [loading, setLoading] = useState(false);
   const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
   const suggestions = useMemo(
-    () => SPACE_FACTS.slice(0, 4).map((f) => (lang === "bn" ? f.question_bn : f.question_en)),
+    () => SPACE_FACTS.slice(0, 5).map((f) => (lang === "bn" ? f.question_bn : f.question_en)),
     [lang]
   );
 
@@ -96,14 +99,13 @@ export function AskMode() {
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         setError(msg);
-        // Show error inline as a system message
         setMessages((m) => [
           ...m,
           {
             role: "assistant",
             text: t(
-              `দুঃখিত, এই মুহূর্তে উত্তর দেওয়া যাচ্ছে না। একটু পরে আবার চেষ্টা করো। (ত্রুটি: ${msg})`,
-              `Sorry, I couldn't answer right now. Please try again in a moment. (Error: ${msg})`
+              `দুঃখিত, এই মুহূর্তে উত্তর দেওয়া যাচ্ছে না। একটু পরে আবার চেষ্টা করো।`,
+              `Sorry, I couldn't answer right now. Please try again in a moment.`
             ),
             fallback: "polite",
             source: "Error",
@@ -123,144 +125,190 @@ export function AskMode() {
     } else {
       speak(text, lang);
       setSpeakingId(id);
-      setTimeout(() => setSpeakingId(null), text.length * 80);
+      setTimeout(() => setSpeakingId(null), Math.min(text.length * 75, 30000));
     }
   };
 
   return (
-    <div className="flex flex-col h-full max-w-3xl mx-auto w-full">
-      <ScrollArea
-        className="flex-1 min-h-0 mb-4 pr-2"
-        style={{ maxHeight: "calc(100vh - 340px)" }}
-      >
-        <div className="space-y-4 p-1">
-          {messages.map((m, i) => {
-            const id = `msg-${i}`;
-            const meta = m.fallback ? FALLBACK_META[m.fallback] : null;
-            const MetaIcon = meta?.icon;
-            return (
+    <div className="flex flex-col max-w-3xl mx-auto w-full" style={{ height: "calc(100vh - 380px)", minHeight: "420px" }}>
+      {/* Chat messages */}
+      <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-5 pb-2" style={{ scrollbarWidth: "thin" }}>
+        {messages.map((m, i) => {
+          const id = `msg-${i}`;
+          const meta = m.fallback ? FALLBACK_META[m.fallback] : null;
+          const MetaIcon = meta?.icon;
+          const isUser = m.role === "user";
+
+          return (
+            <div key={id} className={`flex gap-3 akash-fade-up ${isUser ? "flex-row-reverse" : ""}`}
+              style={{ animationDelay: `${i * 0.04}s` }}>
+              {/* Avatar */}
               <div
-                key={id}
-                className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : ""}`}
+                className="flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-bold"
+                style={isUser
+                  ? { background: "linear-gradient(135deg, rgba(94,58,202,0.3), rgba(139,111,240,0.2))", border: "1px solid rgba(139,111,240,0.4)" }
+                  : { background: "linear-gradient(135deg, rgba(214,186,101,0.25), rgba(245,224,138,0.15))", border: "1px solid rgba(214,186,101,0.5)" }
+                }
               >
-                <div
-                  className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center border ${
-                    m.role === "user"
-                      ? "bg-akash-purple/20 border-akash-purple/40"
-                      : "bg-akash-gold/20 border-akash-gold/50"
-                  }`}
-                >
-                  {m.role === "user" ? (
-                    <User className="w-4 h-4 text-akash-purple-bright" />
-                  ) : (
-                    <Sparkles className="w-4 h-4 text-akash-gold-bright" />
-                  )}
-                </div>
-                <div
-                  className={`akash-glass rounded-2xl px-4 py-3 max-w-[85%] akash-stream-in ${
-                    m.role === "user" ? "bg-akash-purple/15" : ""
-                  }`}
-                >
-                  <p
-                    className={`text-akash-star leading-relaxed ${
-                      m.role === "user" ? "" : "font-bn"
-                    }`}
-                  >
-                    {m.text}
-                  </p>
-                  {m.role === "assistant" && (
-                    <div className="mt-2 pt-2 border-t border-akash-border/40 flex items-center justify-between gap-2 flex-wrap">
-                      <div className="flex items-center gap-2 text-[10px] text-akash-muted uppercase tracking-wider">
-                        {MetaIcon && (
-                          <span className={`flex items-center gap-1 ${meta.color}`}>
-                            <MetaIcon className="w-3 h-3" />
-                            {meta.label}
-                          </span>
-                        )}
-                        {m.latencyMs !== undefined && (
-                          <span>· {(m.latencyMs / 1000).toFixed(1)}s</span>
-                        )}
-                        {m.source && (
-                          <span className="truncate max-w-[200px]">· {m.source}</span>
-                        )}
-                      </div>
-                      <button
-                        onClick={() => toggleSpeak(m.text, id)}
-                        className="text-akash-gold hover:text-akash-gold-bright transition-colors"
-                        aria-label={t("শোনাও", "Play audio")}
-                      >
-                        {speakingId === id ? (
-                          <Square className="w-4 h-4" />
-                        ) : (
-                          <Volume2 className="w-4 h-4" />
-                        )}
-                      </button>
+                {isUser
+                  ? <User className="w-4.5 h-4.5" style={{ color: "#8b6ff0" }} />
+                  : <Sparkles className="w-4.5 h-4.5" style={{ color: "#f5e08a" }} />
+                }
+              </div>
+
+              {/* Bubble */}
+              <div
+                className="rounded-2xl px-4 py-3.5 max-w-[85%] relative"
+                style={isUser
+                  ? {
+                      background: "linear-gradient(135deg, rgba(94,58,202,0.18), rgba(94,58,202,0.08))",
+                      border: "1px solid rgba(139,111,240,0.3)",
+                      backdropFilter: "blur(20px)",
+                    }
+                  : {
+                      background: "rgba(255,255,255,0.035)",
+                      border: "1px solid rgba(214,186,101,0.18)",
+                      backdropFilter: "blur(24px)",
+                      boxShadow: "0 4px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)",
+                    }
+                }
+              >
+                <p className={`text-[0.9rem] leading-relaxed text-akash-star ${!isUser ? "font-bn" : ""}`}>
+                  {m.text}
+                </p>
+
+                {!isUser && (
+                  <div className="mt-3 pt-2.5 flex items-center justify-between gap-2 flex-wrap"
+                    style={{ borderTop: "1px solid rgba(214,186,101,0.15)" }}>
+                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider flex-wrap">
+                      {meta && MetaIcon && (
+                        <span
+                          className="flex items-center gap-1 px-2 py-0.5 rounded-full font-bold"
+                          style={{ color: meta.color, background: meta.bg, fontSize: "9px" }}
+                        >
+                          <MetaIcon className="w-2.5 h-2.5" />
+                          {meta.label}
+                        </span>
+                      )}
+                      {m.latencyMs !== undefined && (
+                        <span style={{ color: "#6a8ba8" }}>⚡ {(m.latencyMs / 1000).toFixed(1)}s</span>
+                      )}
+                      {m.source && (
+                        <span className="truncate max-w-[160px]" style={{ color: "#6a8ba8" }}>
+                          · {m.source}
+                        </span>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-          {loading && (
-            <div className="flex gap-3">
-              <div className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center border bg-akash-gold/20 border-akash-gold/50">
-                <Sparkles className="w-4 h-4 text-akash-gold-bright akash-pulse-glow rounded-full" />
-              </div>
-              <div className="akash-glass rounded-2xl px-4 py-4">
-                <div className="akash-loading-dots">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-                <div className="text-[10px] text-akash-muted mt-2 uppercase tracking-wider">
-                  {t("গেমা ভাবছে...", "Gemma is thinking...")}
-                </div>
+
+                    {/* Voice button */}
+                    <button
+                      onClick={() => toggleSpeak(m.text, id)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all duration-200 text-[10px] font-bold"
+                      style={speakingId === id
+                        ? { background: "rgba(214,186,101,0.2)", color: "#f5e08a", border: "1px solid rgba(214,186,101,0.5)" }
+                        : { background: "rgba(255,255,255,0.04)", color: "#6a8ba8", border: "1px solid rgba(255,255,255,0.08)" }
+                      }
+                      aria-label={t("শোনাও", "Play audio")}
+                    >
+                      {speakingId === id ? (
+                        <>
+                          <div className="akash-voice-wave flex items-center gap-px" style={{ color: "#f5e08a" }}>
+                            <span style={{ height: "10px" }} />
+                            <span style={{ height: "14px" }} />
+                            <span style={{ height: "8px" }} />
+                            <span style={{ height: "12px" }} />
+                            <span style={{ height: "6px" }} />
+                          </div>
+                          <Square className="w-2.5 h-2.5" />
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="w-3 h-3" />
+                          {t("শোনো", "Listen")}
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
-          )}
-        </div>
-      </ScrollArea>
+          );
+        })}
 
+        {/* Loading */}
+        {loading && (
+          <div className="flex gap-3">
+            <div className="flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, rgba(214,186,101,0.25), rgba(245,224,138,0.15))", border: "1px solid rgba(214,186,101,0.5)" }}>
+              <Sparkles className="w-4.5 h-4.5 animate-spin" style={{ color: "#f5e08a" }} />
+            </div>
+            <div className="rounded-2xl px-5 py-4"
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(214,186,101,0.18)", backdropFilter: "blur(24px)" }}>
+              <div className="akash-loading-dots flex items-center gap-1 mb-2">
+                <span /><span /><span />
+              </div>
+              <p className="text-[10px] uppercase tracking-widest font-bold" style={{ color: "#6a8ba8" }}>
+                {t("আকাশ ভাবছে...", "AKASH is thinking...")}
+              </p>
+            </div>
+          </div>
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Error banner */}
       {error && (
-        <div className="mb-3 px-3 py-2 rounded-lg bg-akash-purple/10 border border-akash-purple/30 text-xs text-akash-purple-bright">
+        <div className="my-2 px-3 py-2 rounded-xl text-xs font-bn"
+          style={{ background: "rgba(232,93,122,0.08)", border: "1px solid rgba(232,93,122,0.25)", color: "#e85d7a" }}>
           {t("সর্বশেষ অনুরোধে ত্রুটি — কিউরেটেড উত্তর দেখানো হচ্ছে।", "Last request errored — showing fallback.")}
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2 mb-3">
+      {/* Suggestions */}
+      <div className="flex flex-wrap gap-2 my-3">
         {suggestions.map((s, i) => (
           <button
             key={i}
             onClick={() => send(s)}
             disabled={loading}
-            className="akash-glass px-3 py-1.5 rounded-full text-xs text-akash-star-dim hover:text-akash-gold hover:border-akash-gold/60 transition-all font-bn disabled:opacity-50"
+            className="akash-chip disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {s}
           </button>
         ))}
       </div>
 
+      {/* Input bar */}
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          send(input);
-        }}
-        className="flex gap-2"
+        onSubmit={(e) => { e.preventDefault(); send(input); }}
+        className="flex gap-2.5"
       >
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={t("মহাকাশ নিয়ে প্রশ্ন করো...", "Ask about space...")}
-          disabled={loading}
-          className="flex-1 bg-akash-card border-akash-border text-akash-star placeholder:text-akash-muted font-bn h-12 rounded-xl"
-        />
+        <div className="flex-1 relative">
+          <Mic className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+            style={{ color: "rgba(106,139,168,0.5)" }} />
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={t("মহাকাশ নিয়ে প্রশ্ন করো...", "Ask me anything about space...")}
+            disabled={loading}
+            className="w-full h-12 pl-10 pr-4 text-sm font-bn akash-input outline-none"
+          />
+        </div>
         <Button
           type="submit"
           size="icon"
           disabled={!input.trim() || loading}
-          className="bg-akash-gold hover:bg-akash-gold-bright text-akash-night h-12 w-12 rounded-xl akash-pulse-glow"
+          className="h-12 w-12 rounded-xl font-bold flex-shrink-0 transition-all duration-300"
+          style={{
+            background: input.trim() && !loading
+              ? "linear-gradient(135deg, #d6ba65, #f5e08a)"
+              : "rgba(255,255,255,0.06)",
+            color: input.trim() && !loading ? "#030510" : "#6a8ba8",
+            border: "none",
+            boxShadow: input.trim() && !loading ? "0 0 20px rgba(214,186,101,0.4)" : "none",
+          }}
         >
-          <Send className="w-5 h-5" />
+          <Send className="w-4.5 h-4.5" />
         </Button>
       </form>
     </div>

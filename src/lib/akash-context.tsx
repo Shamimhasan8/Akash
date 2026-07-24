@@ -44,32 +44,58 @@ export function useAkash() {
   return ctx;
 }
 
-/** Speak text via Web Speech API. Bangla voice if available, else English fallback. */
+/** Speak text via Web Speech API. Strictly Bangla voice — no Hindi fallback. */
 export function useVoice() {
   const speak = useCallback((text: string, lang: Lang = "bn") => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
+
     const utter = new SpeechSynthesisUtterance(text);
-    utter.rate = 0.92;
-    utter.pitch = 1.1;
+    utter.rate = 0.88;
+    utter.pitch = 1.05;
     utter.volume = 1;
 
-    // Try to find a Bangla voice
-    const voices = window.speechSynthesis.getVoices();
-    if (lang === "bn") {
-      const bnVoice =
-        voices.find((v) => v.lang === "bn-IN" || v.lang === "bn_BD" || v.lang.startsWith("bn")) ||
-        voices.find((v) => v.lang.startsWith("hi")) ||  // Hindi fallback (similar phonetics)
-        voices.find((v) => v.lang.startsWith("en-IN")); // Indian English
-      if (bnVoice) utter.voice = bnVoice;
-      utter.lang = "bn-IN";
-    } else {
-      const enVoice = voices.find((v) => v.lang === "en-US" || v.lang === "en-GB");
-      if (enVoice) utter.voice = enVoice;
-      utter.lang = "en-US";
-    }
+    const applyVoice = () => {
+      const voices = window.speechSynthesis.getVoices();
 
-    window.speechSynthesis.speak(utter);
+      if (lang === "bn") {
+        // Bangla voices only — strictly no Hindi
+        const bnVoice =
+          voices.find((v) => v.lang === "bn-BD") ||        // Bangla Bangladesh (preferred)
+          voices.find((v) => v.lang === "bn-IN") ||        // Bangla India
+          voices.find((v) => v.lang.startsWith("bn")) ||   // any Bangla locale
+          null;                                             // no fallback to Hindi
+
+        if (bnVoice) {
+          utter.voice = bnVoice;
+          utter.lang = bnVoice.lang;
+        } else {
+          // Set lang tag for browser TTS even without a matching voice object
+          utter.lang = "bn-BD";
+        }
+      } else {
+        // English
+        const enVoice =
+          voices.find((v) => v.lang === "en-US" && v.name.includes("Natural")) ||
+          voices.find((v) => v.lang === "en-US") ||
+          voices.find((v) => v.lang === "en-GB") ||
+          voices.find((v) => v.lang.startsWith("en")) ||
+          null;
+
+        if (enVoice) utter.voice = enVoice;
+        utter.lang = "en-US";
+      }
+
+      window.speechSynthesis.speak(utter);
+    };
+
+    // Voices may not be loaded yet — wait if needed
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) {
+      applyVoice();
+    } else {
+      window.speechSynthesis.addEventListener("voiceschanged", applyVoice, { once: true });
+    }
   }, []);
 
   const stop = useCallback(() => {
@@ -79,3 +105,4 @@ export function useVoice() {
 
   return { speak, stop };
 }
+
