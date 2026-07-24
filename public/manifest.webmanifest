@@ -1,0 +1,26 @@
+{
+  "name": "AKASH — Bengali Space Tutor for Kids",
+  "short_name": "AKASH",
+  "description": "Bilingual AI space tutor for kids, powered by Gemma-2",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050717",
+  "theme_color": "#050717",
+  "lang": "bn",
+  "categories": ["education", "kids", "science"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
