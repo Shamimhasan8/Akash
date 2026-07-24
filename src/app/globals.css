@@ -1,0 +1,312 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter), var(--font-bn), system-ui, sans-serif;
+  --font-bn: var(--font-bn), var(--font-inter), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+
+  /* AKASH Midnight Cosmos Palette */
+  --color-akash-night: #050717;
+  --color-akash-deep: #0a0e2a;
+  --color-akash-mid: #131a3a;
+  --color-akash-card: rgba(255, 255, 255, 0.04);
+  --color-akash-card-hover: rgba(255, 255, 255, 0.07);
+  --color-akash-border: rgba(214, 186, 101, 0.22);
+  --color-akash-border-strong: rgba(214, 186, 101, 0.45);
+
+  --color-akash-gold: #d6ba65;
+  --color-akash-gold-bright: #f5e08a;
+  --color-akash-gold-deep: #8a6b2e;
+
+  --color-akash-purple: #5e3aca;
+  --color-akash-purple-bright: #8b6ff0;
+
+  --color-akash-cyan: #4da8da;
+  --color-akash-cyan-bright: #7ec5ed;
+
+  --color-akash-star: #f5f3ea;
+  --color-akash-star-dim: #b8c4d6;
+  --color-akash-muted: #7a9bb8;
+
+  /* shadcn mappings */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 1rem;
+  --background: #050717;
+  --foreground: #f5f3ea;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-foreground: #f5f3ea;
+  --popover: #0a0e2a;
+  --popover-foreground: #f5f3ea;
+  --primary: #d6ba65;
+  --primary-foreground: #050717;
+  --secondary: #131a3a;
+  --secondary-foreground: #f5f3ea;
+  --muted: rgba(255, 255, 255, 0.06);
+  --muted-foreground: #7a9bb8;
+  --accent: #5e3aca;
+  --accent-foreground: #f5f3ea;
+  --destructive: #c48580;
+  --border: rgba(214, 186, 101, 0.22);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: #d6ba65;
+  --chart-1: #d6ba65;
+  --chart-2: #4da8da;
+  --chart-3: #5e3aca;
+  --chart-4: #79bc8f;
+  --chart-5: #c6a86d;
+  --sidebar: #0a0e2a;
+  --sidebar-foreground: #f5f3ea;
+  --sidebar-primary: #d6ba65;
+  --sidebar-primary-foreground: #050717;
+  --sidebar-accent: #131a3a;
+  --sidebar-accent-foreground: #f5f3ea;
+  --sidebar-border: rgba(214, 186, 101, 0.22);
+  --sidebar-ring: #d6ba65;
+}
+
+.dark {
+  --background: #050717;
+  --foreground: #f5f3ea;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-foreground: #f5f3ea;
+  --popover: #0a0e2a;
+  --popover-foreground: #f5f3ea;
+  --primary: #d6ba65;
+  --primary-foreground: #050717;
+  --secondary: #131a3a;
+  --secondary-foreground: #f5f3ea;
+  --muted: rgba(255, 255, 255, 0.06);
+  --muted-foreground: #7a9bb8;
+  --accent: #5e3aca;
+  --accent-foreground: #f5f3ea;
+  --destructive: #c48580;
+  --border: rgba(214, 186, 101, 0.22);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: #d6ba65;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
+  }
+  body {
+    @apply bg-background text-foreground;
+    background:
+      radial-gradient(ellipse 80% 60% at 18% 12%, rgba(214, 186, 101, 0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 70% 50% at 82% 88%, rgba(94, 58, 202, 0.14) 0%, transparent 60%),
+      radial-gradient(ellipse 100% 80% at 50% 50%, rgba(20, 40, 90, 0.30) 0%, transparent 80%),
+      linear-gradient(135deg, #050717 0%, #0a0e2a 50%, #050717 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(214, 186, 101, 0.25);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(214, 186, 101, 0.5); }
+}
+
+/* ─── Starfield ─── */
+.akash-starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.akash-starfield::before,
+.akash-starfield::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 5% 10%, rgba(255,255,255,0.8), transparent 50%),
+    radial-gradient(1.5px 1.5px at 15% 25%, rgba(214,186,101,0.6), transparent 50%),
+    radial-gradient(1px 1px at 25% 70%, rgba(255,255,255,0.7), transparent 50%),
+    radial-gradient(1px 1px at 35% 40%, rgba(255,255,255,0.5), transparent 50%),
+    radial-gradient(2px 2px at 45% 15%, rgba(214,186,101,0.8), transparent 50%),
+    radial-gradient(1px 1px at 55% 85%, rgba(255,255,255,0.9), transparent 50%),
+    radial-gradient(1px 1px at 65% 30%, rgba(255,255,255,0.6), transparent 50%),
+    radial-gradient(1.5px 1.5px at 75% 60%, rgba(214,186,101,0.7), transparent 50%),
+    radial-gradient(1px 1px at 85% 20%, rgba(255,255,255,0.8), transparent 50%),
+    radial-gradient(1px 1px at 95% 80%, rgba(255,255,255,0.5), transparent 50%),
+    radial-gradient(1px 1px at 10% 55%, rgba(255,255,255,0.7), transparent 50%),
+    radial-gradient(1px 1px at 30% 90%, rgba(255,255,255,0.6), transparent 50%),
+    radial-gradient(2px 2px at 50% 50%, rgba(214,186,101,0.5), transparent 50%),
+    radial-gradient(1px 1px at 70% 5%, rgba(255,255,255,0.9), transparent 50%),
+    radial-gradient(1px 1px at 90% 45%, rgba(255,255,255,0.7), transparent 50%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  animation: akash-twinkle 6s ease-in-out infinite alternate;
+}
+.akash-starfield::after {
+  animation-delay: -3s;
+  opacity: 0.6;
+  transform: scale(1.3) rotate(45deg);
+}
+
+@keyframes akash-twinkle {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.95; }
+}
+
+/* ─── Glass card ─── */
+.akash-glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(214, 186, 101, 0.22);
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.akash-glass:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(214, 186, 101, 0.45);
+}
+
+.akash-glass-strong {
+  background: rgba(10, 14, 42, 0.75);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(214, 186, 101, 0.32);
+}
+
+/* ─── Orbit ring (decorative) ─── */
+.akash-orbit {
+  position: relative;
+  border-radius: 50%;
+  border: 1px solid rgba(214, 186, 101, 0.18);
+}
+.akash-orbit::before {
+  content: "";
+  position: absolute;
+  inset: 10%;
+  border-radius: 50%;
+  border: 1px dashed rgba(94, 58, 202, 0.25);
+}
+.akash-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 25%;
+  border-radius: 50%;
+  border: 1px solid rgba(77, 168, 218, 0.20);
+}
+
+/* ─── Animations ─── */
+@keyframes akash-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+.akash-float { animation: akash-float 4s ease-in-out infinite; }
+
+@keyframes akash-spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.akash-spin-slow { animation: akash-spin-slow 30s linear infinite; }
+
+@keyframes akash-pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(214, 186, 101, 0.4), 0 0 40px rgba(214, 186, 101, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(214, 186, 101, 0.6), 0 0 60px rgba(214, 186, 101, 0.35);
+  }
+}
+.akash-pulse-glow { animation: akash-pulse-glow 3s ease-in-out infinite; }
+
+@keyframes akash-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.akash-fade-up { animation: akash-fade-up 0.5s ease-out both; }
+
+@keyframes akash-stream-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.akash-stream-in { animation: akash-stream-in 0.3s ease-out both; }
+
+/* ─── Typography helpers ─── */
+.font-bn { font-family: var(--font-bn), var(--font-inter), sans-serif; }
+
+.akash-text-glow {
+  text-shadow:
+    0 0 12px rgba(214, 186, 101, 0.4),
+    0 0 24px rgba(214, 186, 101, 0.2);
+}
+
+.akash-gradient-gold {
+  background: linear-gradient(135deg, #f5e08a 0%, #d6ba65 50%, #8a6b2e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.akash-gradient-cosmic {
+  background: linear-gradient(135deg, #f5e08a 0%, #d6ba65 30%, #5e3aca 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ─── Loading dots ─── */
+.akash-loading-dots span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d6ba65;
+  margin: 0 2px;
+  animation: akash-bounce 1.4s ease-in-out infinite;
+}
+.akash-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.akash-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes akash-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
