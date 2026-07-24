@@ -11,7 +11,7 @@
  */
 
 import "server-only";
-import { SPACE_FACTS, STORIES, QUIZZES, type SpaceTopic } from "./akash-data";
+import { SPACE_FACTS, TOPICS, STORIES, QUIZZES, type SpaceTopic } from "./akash-data";
 
 export interface CuratedMatch {
   found: boolean;
@@ -22,11 +22,11 @@ export interface CuratedMatch {
 }
 
 /**
- * Find a curated Bangla answer for a user question.
+ * Find a curated Bangla/English answer for a user question.
  * Strategy:
- *  1. Keyword match (Bangla or English)
+ *  1. Keyword match (Bangla or English keywords from the fact)
  *  2. Question stem match (first 5-6 chars of the question)
- *  3. Topic name match (e.g. "moon", "চাঁদ")
+ *  3. Topic name match — looks up English/Bangla names from TOPICS array
  */
 export function findCuratedAnswer(question: string, lang: "bn" | "en" = "bn"): CuratedMatch {
   const q = question.toLowerCase().trim();
@@ -63,9 +63,13 @@ export function findCuratedAnswer(question: string, lang: "bn" | "en" = "bn"): C
     }
   }
 
-  // 3. Topic name match
+  // 3. Topic name match — use TOPICS array for English/Bangla names
   for (const fact of SPACE_FACTS) {
-    if (q.includes(fact.topic_en.toLowerCase()) || q.includes(fact.topic_bn)) {
+    const topicInfo = TOPICS.find((t) => t.id === fact.topic);
+    if (!topicInfo) continue;
+    const topicEn = topicInfo.en.toLowerCase();
+    const topicBn = topicInfo.bn;
+    if (q.includes(topicEn) || q.includes(topicBn)) {
       return {
         found: true,
         answer: lang === "bn" ? fact.answer_bn : fact.answer_en,
