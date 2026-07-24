@@ -13,7 +13,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { generate, AKASH_SYSTEM_PROMPT, getConfig } from "@/lib/huggingface";
+import { generate, getAkashSystemPrompt, getConfig } from "@/lib/huggingface";
 import { STORIES, type SpaceTopic } from "@/lib/akash-data";
 
 export const runtime = "nodejs";
@@ -70,18 +70,26 @@ export async function POST(req: NextRequest) {
   // ── Step 2: Live generation (if enabled) ────────────────────────
   if (config.liveModelEnabled && forceMode !== "curated") {
     try {
-      const storyPrompt = `একটি শিশুর জন্য ${topic} সম্পর্কে একটি ছোট গল্প লেখো। গল্পের নায়ক হবে একজন শিশু যে ${topic}-এ যায় বা সে সম্পর্কে শেখে। গল্পটি ৪টি ছোট অধ্যায়ে লেখো। প্রতিটি অধ্যায় ২-৩ বাক্যের।
+      const systemPrompt = getAkashSystemPrompt(lang);
+      const storyPrompt = lang === "en"
+        ? `Write a short space story for a child about ${topic}. The hero should be a child who explores or learns about ${topic}. Write it in 4 short chapters (2-3 sentences per chapter).
+
+Reply in JSON format:
+{"title": "Story Title", "chapters": [{"bn": "Chapter 1 text", "en": "Chapter 1 text"}, {"bn": "Chapter 2 text", "en": "Chapter 2 text"}]}
+
+Return ONLY valid JSON, nothing else.`
+        : `একটি শিশুর জন্য ${topic} সম্পর্কে একটি ছোট গল্প লেখো। গল্পের নায়ক হবে একজন শিশু যে ${topic}-এ যায় বা সে সম্পর্কে শেখে। গল্পটি ৪টি ছোট অধ্যায়ে লেখো। প্রতিটি অধ্যায় ২-৩ বাক্যের।
 
 প্রতিটি অধ্যায়ের শুরুতে "অধ্যায় ১:", "অধ্যায় ২:" ইত্যাদি লেখো।
 
 JSON আকারে উত্তর দাও:
-{"title": "গল্পের নাম", "chapters": [{"bn": "অধ্যায় ১ টেক্সট"}, {"bn": "অধ্যায় ২ টেক্সট"}, ...]}
+{"title": "গল্পের নাম", "chapters": [{"bn": "অধ্যায় ১ টেক্সট", "en": "Chapter 1 text"}, {"bn": "অধ্যায় ২ টেক্সট", "en": "Chapter 2 text"}]}
 
 শুধু JSON, অন্য কিছু না।`;
 
       const result = await generate(
         [
-          { role: "system", content: AKASH_SYSTEM_PROMPT },
+          { role: "system", content: systemPrompt },
           { role: "user", content: storyPrompt },
         ],
         {

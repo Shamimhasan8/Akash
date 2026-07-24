@@ -17,7 +17,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { generate, AKASH_SYSTEM_PROMPT, getConfig } from "@/lib/huggingface";
+import { generate, getAkashSystemPrompt, getConfig } from "@/lib/huggingface";
 import { QUIZZES, type SpaceTopic } from "@/lib/akash-data";
 
 export const runtime = "nodejs";
@@ -74,7 +74,28 @@ export async function POST(req: NextRequest) {
   // ── Step 2: Live generation (only if explicitly requested) ──────
   if (config.liveModelEnabled && forceMode === "live") {
     try {
-      const quizPrompt = `${topic} সম্পর্কে ৫টি বহুনির্বাচনী প্রশ্ন (MCQ) তৈরি করো শিশুদের জন্য।
+      const systemPrompt = getAkashSystemPrompt(lang);
+      const quizPrompt = lang === "en"
+        ? `Create 5 multiple choice questions (MCQ) about ${topic} for children.
+
+Each question has 4 options with only 1 correct index (0-3).
+
+JSON format:
+{
+  "title": "${topic} Quiz",
+  "questions": [
+    {
+      "q": "Question in English",
+      "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+      "correct": 0,
+      "explain": "Explanation why this option is correct"
+    }
+  ]
+}
+
+correct is index (0-3).
+Return ONLY valid JSON.`
+        : `${topic} সম্পর্কে ৫টি বহুনির্বাচনী প্রশ্ন (MCQ) তৈরি করো শিশুদের জন্য।
 
 প্রতিটি প্রশ্নের ৪টি অপশন থাকবে, শুধু একটি সঠিক।
 
@@ -96,7 +117,7 @@ correct হলো সঠিক অপশনের ইনডেক্স (0-3)।
 
       const result = await generate(
         [
-          { role: "system", content: AKASH_SYSTEM_PROMPT },
+          { role: "system", content: systemPrompt },
           { role: "user", content: quizPrompt },
         ],
         {

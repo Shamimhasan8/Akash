@@ -16,7 +16,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { generate, AKASH_SYSTEM_PROMPT, HuggingFaceError, getConfig } from "@/lib/huggingface";
+import { generate, getAkashSystemPrompt, HuggingFaceError, getConfig } from "@/lib/huggingface";
 import { findCuratedAnswer, politeFallbackBn, politeFallbackEn } from "@/lib/curated";
 
 export const runtime = "nodejs";
@@ -87,9 +87,10 @@ export async function POST(req: NextRequest) {
 
   // ── Mode: live (try HF API first) ───────────────────────────────
   try {
+    const systemPrompt = getAkashSystemPrompt(lang);
     const result = await generate(
       [
-        { role: "system", content: AKASH_SYSTEM_PROMPT },
+        { role: "system", content: systemPrompt },
         { role: "user", content: question },
       ],
       {
