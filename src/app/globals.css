@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -8,31 +7,66 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-border: var(--border);
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-bn: 'Noto Sans Bengali', sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-bn: var(--font-bn), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+  --font-display: var(--font-display), 'Baloo Da 2', sans-serif;
 
-  /* Apple White Ceramic Palette */
-  --color-akash-night: #fbfbfd;
-  --color-akash-deep: #f5f5f7;
-  --color-akash-card: #ffffff;
-  --color-akash-border: rgba(0, 0, 0, 0.08);
-
-  --color-akash-gold: #d97706;
-  --color-akash-purple: #6366f1;
-  --color-akash-cyan: #0284c7;
-
-  --color-akash-star: #1d1d1f;
-  --color-akash-muted: #6e6e73;
+  /* AstroVerse Vibrant Kids Palette */
+  --color-sky-blue: #38bdf8;
+  --color-sky-blue-deep: #0284c7;
+  --color-light-blue: #bae6fd;
+  --color-soft-yellow: #fff9c4;
+  --color-yellow-deep: #f59e0b;
+  --color-purple: #a855f7;
+  --color-purple-deep: #7e22ce;
+  --color-purple-soft: #f3e5f5;
+  --color-pink: #ec4899;
+  --color-green: #10b981;
 }
 
 :root {
   --radius: 1.25rem;
-  --background: #fbfbfd;
-  --foreground: #1d1d1f;
-  --card: #ffffff;
-  --card-foreground: #1d1d1f;
-  --primary: #1d1d1f;
-  --border: rgba(0, 0, 0, 0.08);
+  
+  --bg: #ffffff;
+  --bg-soft: #f0f8ff;
+  --bg-card: #ffffff;
+  --bg-soft-yellow: #fff9c4;
+  --bg-soft-blue: #e3f2fd;
+  --bg-soft-purple: #f3e5f5;
+  --text: #1a2744;
+  --text-soft: #5b6b8a;
+  --text-muted: #8896b3;
+  --sky-blue: #38bdf8;
+  --sky-blue-deep: #0284c7;
+  --light-blue: #bae6fd;
+  --soft-yellow: #fde68a;
+  --yellow-deep: #f59e0b;
+  --purple: #a855f7;
+  --purple-deep: #7e22ce;
+  --purple-soft: #e9d5ff;
+  --pink: #ec4899;
+  --green: #10b981;
+  --red: #ef4444;
+  --orange: #fb923c;
+  --border: #e0eaf5;
+  --shadow-sm: 0 2px 8px rgba(56,189,248,.08);
+  --shadow-md: 0 8px 24px rgba(56,189,248,.12);
+  --shadow-lg: 0 18px 48px rgba(56,189,248,.18);
+  --shadow-purple: 0 8px 24px rgba(168,85,247,.18);
+
+  --background: 0 0% 100%;
+  --foreground: 221 44% 18%;
+  --card: 0 0% 100%;
+  --card-foreground: 221 44% 18%;
+  --primary: 199 89% 48%;
+  --primary-foreground: 0 0% 100%;
+  --muted: 210 100% 97%;
+  --muted-foreground: 218 21% 45%;
+  --accent: 270 91% 65%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --input: 214 60% 92%;
+  --ring: 199 89% 48%;
 }
 
 @layer base {
@@ -41,152 +75,301 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    background:
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 50% 110%, rgba(217, 119, 6, 0.06) 0%, transparent 60%),
-      linear-gradient(180deg, #fbfbfd 0%, #f5f5f7 50%, #fbfbfd 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    letter-spacing: -0.01em;
+    font-family: var(--font-bn);
+    background: #ffffff;
+    color: #1a2744;
+    line-height: 1.6;
+    overflow-x: hidden;
+    font-size: 16px;
   }
 
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
+  /* Hide Next.js dev overlay badges */
+  nextjs-portal, [data-nextjs-toast], [data-next-badge] {
+    display: none !important;
+  }
+
+  ::selection {
+    background: #fde68a;
+    color: #1a2744;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #f0f8ff; }
   ::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.15);
-    border-radius: 99px;
+    background: #38bdf8;
+    border-radius: 10px;
   }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3); }
+  ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
 }
 
-/* ─── Subtle Ambient Starfield ─── */
-.akash-starfield {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+/* ── HERO & SKY BACKGROUND ── */
+.astro-hero-bg {
+  position: relative;
+  min-height: calc(100vh - 70px);
   overflow: hidden;
-  opacity: 0.15;
-}
-.akash-starfield::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(1.5px 1.5px at 15% 20%, rgba(0,0,0,0.6), transparent),
-    radial-gradient(1px 1px at 35% 50%, rgba(0,0,0,0.4), transparent),
-    radial-gradient(1.5px 1.5px at 55% 15%, rgba(0,0,0,0.5), transparent),
-    radial-gradient(1px 1px at 75% 70%, rgba(0,0,0,0.6), transparent),
-    radial-gradient(1.5px 1.5px at 92% 30%, rgba(0,0,0,0.4), transparent);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
-
-/* ─── Apple White Glass ─── */
-.apple-glass {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(40px) saturate(190%);
-  -webkit-backdrop-filter: blur(40px) saturate(190%);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 1.5rem;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.9);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.apple-glass:hover {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(0, 0, 0, 0.14);
-  box-shadow: 0 14px 48px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1);
-}
-
-.apple-pill-nav {
-  background: rgba(245, 245, 247, 0.9);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  padding: 4px;
-  border-radius: 9999px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-}
-
-.apple-chip {
-  display: inline-flex;
+  background: linear-gradient(180deg, #cfeafe 0%, #e3f2fd 40%, #fff9c4 100%);
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.95rem;
-  border-radius: 9999px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  color: #6e6e73;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
-}
-.apple-chip:hover {
-  background: #ffffff;
-  color: #1d1d1f;
-  border-color: rgba(0, 0, 0, 0.18);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  transform: translateY(-1px);
+  justify-content: center;
 }
 
-.apple-input {
-  background: #ffffff !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  border-radius: 9999px !important;
-  color: #1d1d1f !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+/* ── SOLAR SYSTEM ANIMATION ── */
+.solar-system {
+  position: absolute;
+  top: 48%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px; height: 700px;
+  z-index: 2;
+  pointer-events: none;
 }
-.apple-input:focus {
-  background: #ffffff !important;
-  border-color: #1d1d1f !important;
-  box-shadow: 0 0 0 4px rgba(29, 29, 31, 0.08), 0 4px 20px rgba(0,0,0,0.05) !important;
+@media (max-width: 900px) {
+  .solar-system { width: 480px; height: 480px; opacity: 0.85; }
 }
-.apple-input::placeholder { color: #86868b !important; }
-
-/* ─── Apple White Typography ─── */
-.font-bn { font-family: 'Noto Sans Bengali', sans-serif; }
-
-.apple-headline {
-  background: linear-gradient(180deg, #1d1d1f 0%, #434344 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  letter-spacing: -0.03em;
+@media (max-width: 600px) {
+  .solar-system { width: 340px; height: 340px; opacity: 0.7; }
 }
 
-.apple-headline-gold {
-  background: linear-gradient(180deg, #d97706 0%, #b45309 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  letter-spacing: -0.03em;
-}
-
-/* ─── Voice wave animation ─── */
-@keyframes apple-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.05); opacity: 1; }
-}
-.apple-pulse { animation: apple-pulse 2s ease-in-out infinite; }
-
-.akash-loading-dots span {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
+.sun {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 90px; height: 90px;
+  margin: -45px 0 0 -45px;
+  background: radial-gradient(circle at 35% 35%, #fff7b0, #fde047 40%, #f59e0b 70%, #ea580c);
   border-radius: 50%;
-  background: #1d1d1f;
-  margin: 0 2px;
-  animation: apple-bounce 1.4s ease-in-out infinite;
+  box-shadow:
+    0 0 60px rgba(245,158,11,.8),
+    0 0 120px rgba(245,158,11,.5),
+    0 0 200px rgba(245,158,11,.3);
+  animation: sunPulse 4s ease-in-out infinite;
+  z-index: 5;
 }
-.akash-loading-dots span:nth-child(2) { animation-delay: 0.2s; background: #6366f1; }
-.akash-loading-dots span:nth-child(3) { animation-delay: 0.4s; background: #d97706; }
-@keyframes apple-bounce {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30% { transform: translateY(-6px); opacity: 1; }
+@keyframes sunPulse {
+  0%,100% { box-shadow: 0 0 60px rgba(245,158,11,.8), 0 0 120px rgba(245,158,11,.5), 0 0 200px rgba(245,158,11,.3); }
+  50%     { box-shadow: 0 0 80px rgba(245,158,11,.9), 0 0 160px rgba(245,158,11,.6), 0 0 260px rgba(245,158,11,.4); }
 }
+
+.orbit {
+  position: absolute;
+  top: 50%; left: 50%;
+  border: 1px dashed rgba(56,189,248,.35);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: orbitRotate linear infinite;
+}
+@keyframes orbitRotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.planet {
+  position: absolute;
+  top: 50%;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  box-shadow: inset -4px -4px 8px rgba(0,0,0,.3);
+}
+
+.orbit-mercury { width: 160px; height: 160px; animation-duration: 8s; }
+.orbit-mercury .planet {
+  left: -8px; width: 16px; height: 16px;
+  background: radial-gradient(circle at 30% 30%, #d6d3d1, #78716c);
+}
+
+.orbit-venus { width: 220px; height: 220px; animation-duration: 13s; }
+.orbit-venus .planet {
+  left: -12px; width: 24px; height: 24px;
+  background: radial-gradient(circle at 30% 30%, #fef3c7, #f59e0b);
+}
+
+.orbit-earth { width: 290px; height: 290px; animation-duration: 18s; }
+.orbit-earth .planet {
+  left: -14px; width: 28px; height: 28px;
+  background: radial-gradient(circle at 30% 30%, #93c5fd, #2563eb 60%, #1e40af);
+}
+.orbit-earth .planet::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 8px; height: 8px;
+  margin: -4px 0 0 18px;
+  background: radial-gradient(circle at 30% 30%, #e5e7eb, #9ca3af);
+  border-radius: 50%;
+  animation: moonOrbit 3s linear infinite;
+}
+@keyframes moonOrbit {
+  from { transform: rotate(0deg) translateX(0); }
+  to   { transform: rotate(360deg) translateX(0); }
+}
+
+.orbit-mars { width: 370px; height: 370px; animation-duration: 24s; }
+.orbit-mars .planet {
+  left: -12px; width: 22px; height: 22px;
+  background: radial-gradient(circle at 30% 30%, #fca5a5, #dc2626 60%, #991b1b);
+}
+
+.orbit-jupiter { width: 480px; height: 480px; animation-duration: 32s; }
+.orbit-jupiter .planet {
+  left: -22px; width: 44px; height: 44px;
+  background: radial-gradient(circle at 30% 30%, #fde68a, #d97706 50%, #92400e);
+}
+
+.orbit-saturn { width: 580px; height: 580px; animation-duration: 40s; }
+.orbit-saturn .planet {
+  left: -18px; width: 36px; height: 36px;
+  background: radial-gradient(circle at 30% 30%, #fef3c7, #d4a574 60%, #92400e);
+}
+.orbit-saturn .planet::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 60px; height: 14px;
+  margin: -7px 0 0 -30px;
+  background: linear-gradient(90deg, transparent, #d4a574 30%, #fef3c7 50%, #d4a574 70%, transparent);
+  border-radius: 50%;
+  transform: rotate(-20deg);
+  opacity: 0.85;
+}
+
+.orbit-uranus { width: 660px; height: 660px; animation-duration: 50s; }
+.orbit-uranus .planet {
+  left: -14px; width: 28px; height: 28px;
+  background: radial-gradient(circle at 30% 30%, #cffafe, #06b6d4 60%, #0e7490);
+}
+
+.orbit-neptune { width: 720px; height: 720px; animation-duration: 60s; }
+.orbit-neptune .planet {
+  left: -14px; width: 26px; height: 26px;
+  background: radial-gradient(circle at 30% 30%, #bfdbfe, #3b82f6 60%, #1e3a8a);
+}
+
+/* Floating Space Elements */
+.astronaut {
+  position: absolute;
+  top: 18%; left: 12%;
+  font-size: 50px;
+  z-index: 6;
+  animation: floatAstro 6s ease-in-out infinite;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,.15));
+}
+@keyframes floatAstro {
+  0%,100% { transform: translateY(0) rotate(-5deg); }
+  50%     { transform: translateY(-20px) rotate(5deg); }
+}
+
+.satellite {
+  position: absolute;
+  top: 30%; right: 14%;
+  font-size: 32px;
+  z-index: 6;
+  animation: satOrbit 14s linear infinite;
+}
+@keyframes satOrbit {
+  0%   { transform: translate(0,0) rotate(0deg); }
+  25%  { transform: translate(-40px,30px) rotate(90deg); }
+  50%  { transform: translate(-80px,0) rotate(180deg); }
+  75%  { transform: translate(-40px,-30px) rotate(270deg); }
+  100% { transform: translate(0,0) rotate(360deg); }
+}
+
+/* ── BUTTON STYLES (MATCHING INDEX.HTML & SCREENSHOT) ── */
+.btn-primary-grad {
+  background: linear-gradient(135deg, #38bdf8, #a855f7);
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 30px;
+  box-shadow: 0 8px 24px rgba(56,189,248,.3);
+  transition: all .25s ease;
+}
+.btn-primary-grad:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 32px rgba(56,189,248,.4);
+}
+
+.btn-yellow-grad {
+  background: linear-gradient(135deg, #fde68a, #f59e0b);
+  color: #1a2744;
+  font-weight: 700;
+  border-radius: 30px;
+  box-shadow: 0 8px 24px rgba(245,158,11,.3);
+  transition: all .25s ease;
+}
+.btn-yellow-grad:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 32px rgba(245,158,11,.4);
+}
+
+.btn-purple-grad {
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 30px;
+  box-shadow: 0 8px 24px rgba(168,85,247,.3);
+  transition: all .25s ease;
+}
+.btn-purple-grad:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 32px rgba(168,85,247,.4);
+}
+
+.btn-white-glass {
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a2744;
+  font-weight: 600;
+  border: 1.5px solid #bae6fd;
+  border-radius: 30px;
+  box-shadow: 0 4px 16px rgba(56,189,248,.1);
+  backdrop-filter: blur(8px);
+  transition: all .25s ease;
+}
+.btn-white-glass:hover {
+  transform: translateY(-3px);
+  border-color: #38bdf8;
+  box-shadow: 0 8px 24px rgba(56,189,248,.2);
+}
+
+/* ── CARDS & COMPONENTS ── */
+.astro-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #e0eaf5;
+  box-shadow: 0 8px 24px rgba(56,189,248,.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.astro-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+  background: linear-gradient(90deg, #38bdf8, #a855f7);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+.astro-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 48px rgba(56,189,248,.18);
+}
+.astro-card:hover::before { transform: scaleX(1); }
+
+.astro-headline-grad {
+  background: linear-gradient(135deg, #0284c7 0%, #7e22ce 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.font-bn { font-family: 'Hind Siliguri', 'Noto Sans Bengali', system-ui, sans-serif; }
+.font-display { font-family: 'Baloo Da 2', 'Hind Siliguri', system-ui, sans-serif; }
+
+/* Pulse animations */
+@keyframes bounceSlow {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.animate-bounce-slow { animation: bounceSlow 2s ease-in-out infinite; }

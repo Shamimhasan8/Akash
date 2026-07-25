@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Noto_Sans_Bengali } from "next/font/google";
+import { Inter, Noto_Sans_Bengali, Baloo_Da_2 } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -12,7 +12,14 @@ const inter = Inter({
 const notoBn = Noto_Sans_Bengali({
   variable: "--font-bn",
   subsets: ["bengali"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const balooDa2 = Baloo_Da_2({
+  variable: "--font-display",
+  subsets: ["bengali", "latin"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -51,9 +58,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="bn" suppressHydrationWarning className="dark">
+    <html lang="bn" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${notoBn.variable} font-sans antialiased bg-akash-night text-akash-star min-h-screen`}
+        className={`${inter.variable} ${notoBn.variable} ${balooDa2.variable} font-sans antialiased min-h-screen`}
       >
         {children}
         <Toaster />

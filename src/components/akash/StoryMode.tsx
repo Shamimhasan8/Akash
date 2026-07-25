@@ -3,8 +3,6 @@
 import { useState, useCallback } from "react";
 import { useAkash, useVoice } from "@/lib/akash-context";
 import { STORIES, type SpaceTopic } from "@/lib/akash-data";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Volume2, Square, BookOpen, ChevronRight, RotateCcw, Zap, Database,
 } from "lucide-react";
@@ -18,6 +16,11 @@ interface StoryApiResponse {
   topic: string;
 }
 
+const STORY_EMOJI: Record<string, string> = {
+  moon: "🌙", mars: "🔴", sun: "☀️", earth: "🌍", jupiter: "🪐",
+  saturn: "🪐", black_hole: "🕳️", galaxy: "🌌", star: "⭐", comet: "☄️",
+};
+
 export function StoryMode() {
   const { lang, t } = useAkash();
   const { speak, stop } = useVoice();
@@ -26,6 +29,7 @@ export function StoryMode() {
     chapters: { bn: string; en: string }[];
     fallback: "live" | "cache" | "curated";
     source: string;
+    topic?: string;
   } | null>(null);
   const [chapter, setChapter] = useState(0);
   const [speaking, setSpeaking] = useState(false);
@@ -38,21 +42,19 @@ export function StoryMode() {
       stop();
       setSpeaking(false);
 
-      // First try the curated library (synchronous, instant)
       const curated = STORIES.find((s) => s.topic === topic);
       if (curated) {
-        // Use curated — instant, reliable
         setSelectedStory({
           title: lang === "bn" ? curated.title_bn : curated.title_en,
           chapters: curated.chapters,
           fallback: "curated",
           source: "AKASH curated story library",
+          topic,
         });
         setLoading(false);
         return;
       }
 
-      // No curated match — call /api/story for live generation
       try {
         const response = await fetch("/api/story", {
           method: "POST",
@@ -66,15 +68,16 @@ export function StoryMode() {
           chapters: data.chapters,
           fallback: data.fallback,
           source: data.source,
+          topic,
         });
       } catch (err) {
-        // Fallback to first curated story
         const fallback = STORIES[0];
         setSelectedStory({
           title: lang === "bn" ? fallback.title_bn : fallback.title_en,
           chapters: fallback.chapters,
           fallback: "curated",
           source: `AKASH fallback (${err instanceof Error ? err.message : "error"})`,
+          topic: fallback.topic,
         });
       } finally {
         setLoading(false);
@@ -114,221 +117,148 @@ export function StoryMode() {
     }
   };
 
-  // Library view
-  const storyEmoji: Record<string, string> = {
-    moon: "🌙", mars: "🔴", sun: "☀️", earth: "🌍", jupiter: "🪐",
-    saturn: "🪐", black_hole: "🕳️", galaxy: "🌌", star: "⭐", comet: "☄️",
-  };
-  const storyGradient: Record<string, string> = {
-    moon: "linear-gradient(135deg, rgba(192,197,208,0.15), rgba(126,197,237,0.08))",
-    mars: "linear-gradient(135deg, rgba(217,84,77,0.15), rgba(232,93,122,0.08))",
-    sun: "linear-gradient(135deg, rgba(214,186,101,0.15), rgba(245,224,138,0.08))",
-    default: "linear-gradient(135deg, rgba(139,111,240,0.15), rgba(94,58,202,0.08))",
-  };
-
+  /* ── STORY LIBRARY VIEW ── */
   if (!selectedStory) {
     return (
       <div className="max-w-5xl mx-auto w-full">
-        <div className="text-center mb-10 akash-fade-up">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl mb-4 akash-float"
-            style={{ background: "linear-gradient(135deg, rgba(94,58,202,0.25), rgba(139,111,240,0.15))", border: "1px solid rgba(139,111,240,0.4)" }}>
-            <BookOpen className="w-7 h-7" style={{ color: "#8b6ff0" }} />
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-[#f3e5f5] text-3xl mb-3 shadow-sm border border-[#e9d5ff]">
+            📖
           </div>
-          <h2 className="text-4xl font-black mb-3 font-space akash-gradient-cosmic">
-            {t("গল্পের মহাকাশ", "Story Cosmos")}
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-2 font-display text-[#1a2744]">
+            {t("মহাকাশ গল্পের দুনিয়া", "Space Story World")}
           </h2>
-          <p className="text-akash-muted font-bn text-base">
+          <p className="text-[#5b6b8a] font-bn text-base max-w-lg mx-auto">
             {t(
-              "একটা গল্প বেছে নাও — আকাশ তোমাকে গল্প শোনাবে",
-              "Pick a story — AKASH will narrate a magical space tale"
+              "একটি গল্প বেছে নাও — আকাশ তোমাকে দারুণ সব গল্প শোনাবে!",
+              "Pick a story — AKASH will narrate an amazing space tale for you!"
             )}
           </p>
         </div>
 
         {loading && (
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl"
-              style={{ background: "rgba(139,111,240,0.1)", border: "1px solid rgba(139,111,240,0.25)" }}>
-              <div className="akash-loading-dots flex items-center gap-1">
-                <span /><span /><span />
-              </div>
-              <span className="text-sm font-bn" style={{ color: "#8b6ff0" }}>
-                {t("গেমা গল্প বানাচ্ছে...", "Gemma is crafting a story...")}
+            <div className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-[#e3f2fd] border border-[#bae6fd] text-[#0284c7]">
+              <span className="text-xl">✨</span>
+              <span className="text-sm font-bold font-bn">
+                {t("গেমা গল্প তৈরি করছে...", "Gemma is generating a story...")}
               </span>
             </div>
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-          {STORIES.map((s, idx) => (
+        {/* Story Cards Grid (Matching index.html) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {STORIES.map((s) => (
             <button
               key={s.id}
               onClick={() => pickStory(s.topic)}
               disabled={loading}
-              className="group text-left relative overflow-hidden rounded-2xl p-6 transition-all duration-300 disabled:opacity-50"
-              style={{
-                background: storyGradient[s.topic] ?? storyGradient.default,
-                border: "1px solid rgba(255,255,255,0.1)",
-                backdropFilter: "blur(20px)",
-                animationDelay: `${idx * 0.07}s`,
-              }}
+              className="astro-card text-left p-6 flex flex-col justify-between group hover:border-[#38bdf8] transition-all cursor-pointer"
             >
-              {/* Glow on hover */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"
-                style={{ background: "rgba(255,255,255,0.03)" }} />
-              <div className="flex items-start justify-between mb-4 relative z-10">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl"
-                  style={{ background: "rgba(0,0,0,0.2)", backdropFilter: "blur(8px)" }}>
-                  {storyEmoji[s.topic] ?? "✨"}
+              <div>
+                <div className="w-14 h-14 rounded-2xl bg-[#f0f8ff] border border-[#bae6fd] flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">
+                  {STORY_EMOJI[s.topic] ?? "✨"}
                 </div>
-                <ChevronRight className="w-5 h-5 transition-all duration-300 group-hover:translate-x-1"
-                  style={{ color: "rgba(255,255,255,0.4)" }} />
+                <h3 className="text-xl font-bold font-display text-[#1a2744] mb-2 group-hover:text-[#0284c7] transition-colors">
+                  {lang === "bn" ? s.title_bn : s.title_en}
+                </h3>
+                <p className="text-xs text-[#5b6b8a] font-bn">
+                  {s.chapters.length} {t("অধ্যায়", "chapters")} · {t("মজার মহাকাশ শিক্ষা", "Fun Space Education")}
+                </p>
               </div>
-              <h3 className={`text-lg font-bold text-akash-star mb-1.5 relative z-10 ${lang === "bn" ? "font-bn" : "font-space"}`}>
-                {lang === "bn" ? s.title_bn : s.title_en}
-              </h3>
-              <p className="text-xs relative z-10" style={{ color: "rgba(168,184,204,0.8)" }}>
-                {s.chapters.length} {t("অধ্যায়", "chapters")} · {t("কিউরেটেড লাইব্রেরি", "curated library")}
-              </p>
+
+              <div className="mt-6 pt-4 border-t border-[#e0eaf5] flex items-center justify-between text-xs font-bold text-[#0284c7]">
+                <span>{t("গল্প শুনুন", "Read Story")}</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
             </button>
           ))}
-        </div>
-
-        <div className="mt-8 text-center">
-          <p className="text-xs text-akash-muted font-bn">
-            {t(
-              "৩টি হাতে-লেখা গল্প পাওয়া যাচ্ছে। অন্যান্য বিষয়ের জন্য গেমা লাইভ গল্প তৈরি করবে।",
-              "3 hand-crafted stories available. For other topics, Gemma will generate live."
-            )}
-          </p>
         </div>
       </div>
     );
   }
 
-  // Story reader view
+  /* ── STORY READER VIEW ── */
   const currentChapter = selectedStory.chapters[chapter];
   const chapterText = lang === "bn" ? currentChapter.bn : currentChapter.en;
-  const isLive = selectedStory.fallback === "live" || selectedStory.fallback === "cache";
   const progress = ((chapter + 1) / selectedStory.chapters.length) * 100;
 
   return (
     <div className="max-w-3xl mx-auto w-full">
-      <div className="relative overflow-hidden rounded-3xl p-8 md:p-10 akash-fade-up"
-        style={{
-          background: "rgba(7,9,31,0.85)",
-          border: "1px solid rgba(139,111,240,0.25)",
-          backdropFilter: "blur(32px)",
-          boxShadow: "0 24px 80px rgba(0,0,0,0.5), 0 0 40px rgba(94,58,202,0.1), inset 0 1px 0 rgba(255,255,255,0.06)",
-        }}>
-        {/* Decorative orbit */}
-        <div className="absolute -right-24 -top-24 w-72 h-72 akash-orbit opacity-20 pointer-events-none" />
-        <div className="absolute -left-16 -bottom-16 w-48 h-48 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(94,58,202,0.12), transparent 70%)" }} />
+      <div className="bg-white rounded-3xl p-8 border border-[#e0eaf5] shadow-xl relative overflow-hidden">
 
-        <div className="relative z-10">
-          {/* Header */}
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex-1 pr-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] uppercase tracking-widest font-bold px-2.5 py-0.5 rounded-full"
-                  style={{ background: "rgba(214,186,101,0.1)", color: "#d6ba65", border: "1px solid rgba(214,186,101,0.25)" }}>
-                  {t("অধ্যায়", "Chapter")} {chapter + 1}/{selectedStory.chapters.length}
-                </span>
-                {isLive ? (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider"
-                    style={{ background: "rgba(214,186,101,0.1)", color: "#d6ba65", border: "1px solid rgba(214,186,101,0.3)" }}>
-                    <Zap className="w-2.5 h-2.5" /> Live
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider"
-                    style={{ background: "rgba(139,111,240,0.1)", color: "#8b6ff0", border: "1px solid rgba(139,111,240,0.3)" }}>
-                    <Database className="w-2.5 h-2.5" /> Curated
-                  </span>
-                )}
-              </div>
-              <h3 className={`text-2xl md:text-3xl font-black text-akash-star ${lang === "bn" ? "font-bn" : "font-space"}`}>
-                {selectedStory.title}
-              </h3>
-            </div>
-            <button
-              onClick={restart}
-              className="p-2 rounded-xl transition-all duration-200"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#6a8ba8" }}
-              aria-label={t("আবার শুরু", "Restart")}
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
+        {/* Top Header Row */}
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <span className="inline-block px-3 py-1 rounded-full bg-[#f3e5f5] text-[#7e22ce] text-xs font-bold mb-2">
+              {t("অধ্যায়", "Chapter")} {chapter + 1} / {selectedStory.chapters.length}
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-extrabold font-display text-[#1a2744]">
+              {selectedStory.title}
+            </h3>
           </div>
 
-          {/* Progress bar */}
-          <div className="h-1 rounded-full mb-8 overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
-            <div className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${progress}%`, background: "linear-gradient(90deg, #5e3aca, #8b6ff0)" }} />
-          </div>
+          <button
+            onClick={restart}
+            className="p-2.5 rounded-full bg-[#f0f8ff] text-[#5b6b8a] hover:bg-[#e3f2fd] hover:text-[#0284c7] transition-all"
+            title={t("আবার শুরু", "Restart")}
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        </div>
 
-          {/* Chapter text */}
-          <div className="min-h-[180px] mb-8">
-            <p
-              className={`text-lg md:text-xl leading-[1.85] text-akash-star akash-fade-up ${
-                lang === "bn" ? "font-bn" : "font-space"
-              }`}
-              key={chapter}
-            >
-              {chapterText}
-            </p>
-          </div>
+        {/* Progress Bar */}
+        <div className="h-2 rounded-full bg-[#f0f8ff] mb-8 overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-[#38bdf8] to-[#a855f7] transition-all duration-500 rounded-full"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
 
-          {/* Controls */}
-          <div className="flex items-center justify-between gap-3">
-            <button
-              onClick={() => toggleSpeak(chapterText)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300"
-              style={speaking
-                ? { background: "linear-gradient(135deg, #d6ba65, #f5e08a)", color: "#030510", boxShadow: "0 0 20px rgba(214,186,101,0.4)" }
-                : { background: "rgba(214,186,101,0.08)", border: "1px solid rgba(214,186,101,0.25)", color: "#d6ba65" }}
-            >
-              {speaking ? (
-                <>
-                  <div className="akash-voice-wave flex items-center gap-px" style={{ color: "#030510" }}>
-                    <span style={{ height: "10px" }} />
-                    <span style={{ height: "14px" }} />
-                    <span style={{ height: "8px" }} />
-                  </div>
-                  <Square className="w-3.5 h-3.5" />
-                  <span>{t("থামাও", "Stop")}</span>
-                </>
-              ) : (
-                <>
-                  <Volume2 className="w-4 h-4" />
-                  <span>{t("শোনাও", "Listen")}</span>
-                </>
-              )}
-            </button>
+        {/* Chapter Text Box (Matching index.html .story-text yellow border box) */}
+        <div className="bg-[#fff9c4] border-l-4 border-[#f59e0b] p-6 rounded-2xl mb-8">
+          <p className="text-lg sm:text-xl leading-relaxed text-[#1a2744] font-bn">
+            {chapterText}
+          </p>
+        </div>
 
-            <button
-              onClick={next}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300"
-              style={{
-                background: "linear-gradient(135deg, #5e3aca, #8b6ff0)",
-                color: "#fff",
-                boxShadow: "0 4px 20px rgba(94,58,202,0.4)",
-              }}
-            >
-              {chapter < selectedStory.chapters.length - 1 ? (
-                <>
-                  {t("পরের অধ্যায়", "Next chapter")}
-                  <ChevronRight className="w-4 h-4" />
-                </>
-              ) : (
-                <><span>{t("গল্প শেষ ✨", "Finish ✨")}</span></>
-              )}
-            </button>
-          </div>
+        {/* Reader Controls */}
+        <div className="flex items-center justify-between gap-4 pt-4 border-t border-[#e0eaf5]">
+          <button
+            onClick={() => toggleSpeak(chapterText)}
+            className={`px-5 py-2.5 rounded-full text-xs font-bold flex items-center gap-2 transition-all ${
+              speaking
+                ? "bg-[#1a2744] text-white"
+                : "bg-[#fde68a] text-[#1a2744] hover:bg-[#f59e0b] hover:text-white"
+            }`}
+          >
+            {speaking ? (
+              <>
+                <Square className="w-3.5 h-3.5" />
+                <span>{t("থামাও", "Stop")}</span>
+              </>
+            ) : (
+              <>
+                <Volume2 className="w-4 h-4" />
+                <span>{t("গল্প শোনো", "Listen")}</span>
+              </>
+            )}
+          </button>
 
-          <div className="mt-5 text-[10px] font-mono uppercase tracking-widest" style={{ color: "rgba(106,139,168,0.6)" }}>
-            {t("সূত্র", "Source")}: {selectedStory.source}
-          </div>
+          <button
+            onClick={next}
+            className="btn-primary-grad px-6 py-2.5 text-xs flex items-center gap-2"
+          >
+            {chapter < selectedStory.chapters.length - 1 ? (
+              <>
+                <span>{t("পরের অধ্যায়", "Next Chapter")}</span>
+                <ChevronRight className="w-4 h-4" />
+              </>
+            ) : (
+              <span>{t("গল্প শেষ ✨", "Finish ✨")}</span>
+            )}
+          </button>
         </div>
       </div>
     </div>

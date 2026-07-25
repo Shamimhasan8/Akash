@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useAkash, useVoice } from "@/lib/akash-context";
 import { SPACE_FACTS, TOPICS, type SpaceTopic } from "@/lib/akash-data";
-import { Card } from "@/components/ui/card";
 import { Volume2, Square, X } from "lucide-react";
 
 interface Body {
@@ -60,20 +59,20 @@ export function StarMap() {
   return (
     <div className="max-w-5xl mx-auto w-full">
       <div className="text-center mb-6">
-        <h2 className="text-3xl font-bold akash-gradient-cosmic mb-2 font-bn">
-          {t("নক্ষত্র মানচিত্র", "Star Map")}
+        <h2 className="text-3xl sm:text-4xl font-extrabold mb-2 font-display text-[#1a2744]">
+          {t("সৌরজগৎ ও তারার মানচিত্র", "Solar System & Star Map")}
         </h2>
-        <p className="text-akash-muted font-bn">
+        <p className="text-[#5b6b8a] font-bn text-base max-w-lg mx-auto">
           {t(
-            "যেকোনো গ্রহে ট্যাপ করে তার সম্পর্কে জানো",
-            "Tap any planet to learn about it"
+            "যেকোনো গ্রহে ক্লিক করে তার সম্পর্কে দারুণ সব তথ্য জানো!",
+            "Click on any planet to explore fascinating facts about it!"
           )}
         </p>
       </div>
 
-      <Card className="akash-glass-strong p-6 md:p-8 relative overflow-hidden">
-        {/* SVG Solar System */}
-        <div className="relative w-full overflow-x-auto">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#e0eaf5] shadow-xl relative overflow-hidden">
+        {/* Interactive SVG Solar System Map */}
+        <div className="relative w-full overflow-x-auto bg-gradient-to-b from-[#0a1130] to-[#15244d] rounded-2xl p-4 shadow-inner">
           <svg viewBox="0 0 180 100" className="w-full min-w-[600px] h-auto" style={{ aspectRatio: "180/100" }}>
             {/* Orbits */}
             {[15, 25, 36, 47, 62, 80, 95, 108].map((r, i) => (
@@ -84,22 +83,18 @@ export function StarMap() {
                 rx={r}
                 ry={r * 0.6}
                 fill="none"
-                stroke="rgba(214,186,101,0.15)"
-                strokeWidth="0.2"
-                strokeDasharray="0.5 0.5"
+                stroke="rgba(56,189,248,0.3)"
+                strokeWidth="0.25"
+                strokeDasharray="0.6 0.6"
               />
             ))}
 
-            {/* Sun glow */}
+            {/* Sun Glow */}
             <defs>
               <radialGradient id="sunGlow">
-                <stop offset="0%" stopColor="#f5e08a" stopOpacity="0.9" />
-                <stop offset="40%" stopColor="#d6ba65" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="#d6ba65" stopOpacity="0" />
-              </radialGradient>
-              <radialGradient id="earthGlow">
-                <stop offset="0%" stopColor="#5da9e9" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#5da9e9" stopOpacity="0" />
+                <stop offset="0%" stopColor="#fff7b0" stopOpacity="0.9" />
+                <stop offset="40%" stopColor="#f59e0b" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#ea580c" stopOpacity="0" />
               </radialGradient>
             </defs>
 
@@ -114,14 +109,14 @@ export function StarMap() {
               className="cursor-pointer"
               onClick={() => pickBody(BODIES[0])}
             >
-              <animate attributeName="r" values="9;9.5;9" dur="3s" repeatCount="indefinite" />
+              <animate attributeName="r" values="9;9.6;9" dur="3s" repeatCount="indefinite" />
             </circle>
 
-            {/* Other bodies */}
+            {/* Other Bodies */}
             {BODIES.slice(1).map((b) => (
               <g
                 key={b.id}
-                className="cursor-pointer"
+                className="cursor-pointer transition-transform hover:scale-125"
                 onClick={() => pickBody(b)}
               >
                 {b.glow && (
@@ -144,28 +139,29 @@ export function StarMap() {
                   cy={b.cy}
                   r={b.r}
                   fill={b.fill}
-                  className={selectedTopic === b.id ? "ring-2 ring-akash-gold" : ""}
+                  className={selectedTopic === b.id ? "stroke-white stroke-[0.5]" : ""}
                 />
                 {/* Label */}
                 <text
                   x={b.cx}
-                  y={b.cy + b.r + 3}
-                  fontSize="2"
-                  fill={selectedTopic === b.id ? "#d6ba65" : "#7a9bb8"}
+                  y={b.cy + b.r + 3.5}
+                  fontSize="2.2"
+                  fontWeight="bold"
+                  fill={selectedTopic === b.id ? "#38bdf8" : "#e2e8f0"}
                   textAnchor="middle"
-                  className="font-sans"
+                  className="font-bn"
                 >
                   {lang === "bn" ? (TOPICS.find((tp) => tp.id === b.id)?.bn ?? "") : (TOPICS.find((tp) => tp.id === b.id)?.en ?? "")}
                 </text>
               </g>
             ))}
 
-            {/* Decorative stars */}
+            {/* Twinkling Stars */}
             {[
               [5, 15], [12, 85], [25, 10], [38, 92], [55, 8], [70, 95],
               [85, 12], [102, 88], [120, 8], [140, 92], [160, 15], [175, 85],
             ].map(([x, y], i) => (
-              <circle key={i} cx={x} cy={y} r="0.3" fill="white" opacity="0.6">
+              <circle key={i} cx={x} cy={y} r="0.4" fill="white" opacity="0.8">
                 <animate
                   attributeName="opacity"
                   values="0.3;1;0.3"
@@ -177,58 +173,52 @@ export function StarMap() {
           </svg>
         </div>
 
-        {/* Fact popup */}
+        {/* Fact Card Popup */}
         {fact && topicInfo && (
-          <Card className="akash-glass mt-5 p-5 akash-fade-up relative">
+          <div className="mt-6 p-6 rounded-2xl bg-[#f0f8ff] border border-[#bae6fd] relative animate-fade-in">
             <button
               onClick={() => {
                 setSelectedTopic(null);
                 stop();
                 setSpeaking(false);
               }}
-              className="absolute top-3 right-3 text-akash-muted hover:text-akash-gold"
-              aria-label={t("বন্ধ করো", "Close")}
+              className="absolute top-4 right-4 p-1 rounded-full text-[#8896b3] hover:text-[#1a2744] hover:bg-[#e3f2fd]"
             >
               <X className="w-4 h-4" />
             </button>
 
-            <div className="flex items-start gap-3 mb-3">
-              <div className="text-4xl">{topicInfo.emoji}</div>
-              <div className="flex-1">
-                <h3 className={`text-xl font-bold text-akash-gold-bright ${lang === "bn" ? "font-bn" : ""}`}>
+            <div className="flex items-start gap-4 mb-4">
+              <div className="text-4xl p-2 rounded-2xl bg-white border border-[#bae6fd] shadow-sm">
+                {topicInfo.emoji}
+              </div>
+              <div>
+                <h3 className="text-xl font-extrabold text-[#0284c7] font-display">
                   {lang === "bn" ? topicInfo.bn : topicInfo.en}
                 </h3>
-                <p className="text-xs text-akash-muted uppercase tracking-wider mt-1">
+                <p className="text-xs text-[#5b6b8a] uppercase tracking-wider font-semibold mt-0.5">
                   {t("সূত্র", "Source")}: {fact.source}
                 </p>
               </div>
             </div>
 
-            <p className={`text-akash-star leading-relaxed mb-3 ${lang === "bn" ? "font-bn" : ""}`}>
+            <p className="text-base text-[#1a2744] leading-relaxed font-bn mb-4">
               {lang === "bn" ? fact.answer_bn : fact.answer_en}
             </p>
 
             <button
               onClick={() => toggleSpeak(lang === "bn" ? fact.answer_bn : fact.answer_en)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all ${
+              className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 transition-all ${
                 speaking
-                  ? "bg-akash-gold text-akash-night"
-                  : "akash-glass text-akash-gold hover:border-akash-gold/60"
+                  ? "bg-[#1a2744] text-white"
+                  : "bg-[#0284c7] text-white hover:bg-[#0369a1]"
               }`}
             >
               {speaking ? <Square className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-              {speaking ? t("থামাও", "Stop") : t("শোনাও", "Listen")}
+              {speaking ? t("থামাও", "Stop") : t("তথ্যটি শোনো", "Listen")}
             </button>
-          </Card>
+          </div>
         )}
-      </Card>
-
-      <p className="text-center text-xs text-akash-muted mt-4 font-bn">
-        {t(
-          "সৌরজগতের সব গ্রহ সূর্যের চারপাশে ঘোরে। আসল দূরত্ব ও আকার এখানে দেখানো হয়নি।",
-          "All planets in our Solar System orbit the Sun. Real distances and sizes are not to scale."
-        )}
-      </p>
+      </div>
     </div>
   );
 }

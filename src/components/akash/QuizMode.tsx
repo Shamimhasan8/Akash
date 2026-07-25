@@ -3,8 +3,6 @@
 import { useState, useCallback } from "react";
 import { useAkash } from "@/lib/akash-context";
 import { QUIZZES, type SpaceTopic } from "@/lib/akash-data";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   CheckCircle2, XCircle, Trophy, RotateCcw, Brain, ChevronRight, Database,
 } from "lucide-react";
@@ -28,6 +26,10 @@ interface LoadedQuiz {
   fallback: "live" | "cache" | "curated";
 }
 
+const TOPIC_EMOJI: Record<string, string> = {
+  moon: "🌙", sun: "☀️", mars: "🔴", black_hole: "🕳️", default: "✨",
+};
+
 export function QuizMode() {
   const { lang, t } = useAkash();
   const [stage, setStage] = useState<Stage>("select");
@@ -46,7 +48,6 @@ export function QuizMode() {
       setAnswers([]);
       setShowExplain(false);
 
-      // For quizzes, prefer curated (answers are manually verified)
       const curated = QUIZZES.find((q) => q.topic === topic);
       if (curated) {
         setQuiz({
@@ -60,7 +61,6 @@ export function QuizMode() {
         return;
       }
 
-      // No curated quiz for this topic — try /api/quiz for live generation
       try {
         const response = await fetch("/api/quiz", {
           method: "POST",
@@ -81,7 +81,6 @@ export function QuizMode() {
           throw new Error("No questions returned");
         }
       } catch (err) {
-        // Fallback to first curated quiz
         const fallback = QUIZZES[0];
         setQuiz({
           title: lang === "bn" ? fallback.title_bn : fallback.title_en,
@@ -125,114 +124,106 @@ export function QuizMode() {
     setShowExplain(false);
   };
 
-  // Topic select
+  /* ── TOPIC SELECT SCREEN ── */
   if (stage === "select") {
     return (
       <div className="max-w-5xl mx-auto w-full">
         <div className="text-center mb-8">
-          <Brain className="w-12 h-12 text-akash-cyan-bright mx-auto mb-3 akash-float" />
-          <h2 className="text-3xl font-bold akash-gradient-gold mb-2 font-bn">
-            {t("কুইজ মাস্টার", "Quiz Master")}
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-[#e3f2fd] text-3xl mb-3 shadow-sm border border-[#bae6fd]">
+            🎮
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-2 font-display text-[#1a2744]">
+            {t("কুইজ মাস্টার গেম", "Quiz Master Game")}
           </h2>
-          <p className="text-akash-muted font-bn">
-            {t(
-              "একটা বিষয় বেছে নাও — প্রশ্নের উত্তর দাও",
-              "Pick a topic — answer the questions"
-            )}
+          <p className="text-[#5b6b8a] font-bn text-base max-w-lg mx-auto">
+            {t("একটি বিষয় বেছে নাও — প্রশ্নের সঠিক উত্তর দিয়ে জিতে নাও পয়েন্ট!", "Pick a topic — answer questions and win points!")}
           </p>
         </div>
 
         {loading && (
           <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full akash-glass">
-              <div className="akash-loading-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              <span className="text-sm text-akash-muted font-bn">
-                {t("গেমা কুইজ বানাচ্ছে...", "Gemma is making a quiz...")}
-              </span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#f0f8ff] border border-[#bae6fd] text-[#0284c7] font-bold text-xs">
+              <span>✨</span>
+              <span>{t("গেমা কুইজ বানাচ্ছে...", "Gemma is crafting a quiz...")}</span>
             </div>
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Quiz Topic Cards Grid (Matching index.html .quiz-card) */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {QUIZZES.map((q) => {
-            const emoji =
-              q.topic === "moon" ? "🌙"
-              : q.topic === "sun" ? "☀"
-              : q.topic === "mars" ? "🔴"
-              : q.topic === "black_hole" ? "🕳"
-              : "✨";
+            const emoji = TOPIC_EMOJI[q.topic] ?? "✨";
             return (
               <button
                 key={q.topic}
                 onClick={() => startQuiz(q.topic)}
                 disabled={loading}
-                className="akash-glass p-5 text-center hover:scale-[1.04] transition-transform disabled:opacity-50"
+                className="astro-card text-center p-6 hover:border-[#38bdf8] transition-all cursor-pointer flex flex-col items-center justify-between"
               >
-                <div className="text-4xl mb-3">{emoji}</div>
-                <h3 className={`font-bold text-akash-star ${lang === "bn" ? "font-bn" : ""}`}>
-                  {lang === "bn" ? q.title_bn : q.title_en}
-                </h3>
-                <p className="text-xs text-akash-muted mt-1">
-                  {q.questions.length} {t("প্রশ্ন", "questions")} · {t("যাচাইকৃত", "verified")}
-                </p>
+                <div>
+                  <div className="text-5xl mb-4 transform hover:scale-110 transition-transform">
+                    {emoji}
+                  </div>
+                  <h3 className="font-bold text-lg font-display text-[#1a2744] mb-1">
+                    {lang === "bn" ? q.title_bn : q.title_en}
+                  </h3>
+                  <p className="text-xs text-[#5b6b8a] font-bn">
+                    {q.questions.length} {t("প্রশ্ন", "questions")}
+                  </p>
+                </div>
+
+                <div className="mt-4 px-4 py-1.5 rounded-full bg-[#f0f8ff] text-[#0284c7] font-bold text-xs">
+                  {t("খেলুন", "Play")}
+                </div>
               </button>
             );
           })}
-        </div>
-
-        <div className="mt-8 text-center">
-          <p className="text-xs text-akash-muted font-bn inline-flex items-center gap-1">
-            <Database className="w-3 h-3" />
-            {t(
-              "সব কুইজের উত্তর হাতে যাচাই করা — শিশুদের জন্য নিরাপদ।",
-              "All quiz answers are manually verified — safe for kids."
-            )}
-          </p>
         </div>
       </div>
     );
   }
 
-  // Result screen
+  /* ── RESULT SCREEN ── */
   if (stage === "done" && quiz) {
     const score = answers.filter(Boolean).length;
     const total = quiz.questions.length;
     const percent = Math.round((score / total) * 100);
     const emoji = percent === 100 ? "🏆" : percent >= 60 ? "🌟" : "💪";
-    const msg =
-      percent === 100
-        ? t("অসাধারণ! তুমি মহাকাশ বিশেষজ্ঞ!", "Amazing! You're a space expert!")
-        : percent >= 60
-        ? t("খুব ভালো! আরেকটু চেষ্টা করো।", "Great job! Try a bit more.")
-        : t("চমৎকার চেষ্টা! আবার খেলো।", "Great try! Play again.");
 
     return (
       <div className="max-w-md mx-auto w-full text-center">
-        <Card className="akash-glass-strong p-8">
-          <div className="text-7xl mb-4 akash-float">{emoji}</div>
-          <h2 className="text-3xl font-bold akash-gradient-gold mb-2 font-bn">{msg}</h2>
-          <div className="my-6">
-            <div className="text-5xl font-bold text-akash-gold-bright">
-              {score}/{total}
+        <div className="bg-white rounded-3xl p-8 border border-[#e0eaf5] shadow-xl">
+          <div className="text-7xl mb-4 animate-bounce">{emoji}</div>
+          <h2 className="text-2xl font-extrabold font-display text-[#1a2744] mb-2">
+            {percent === 100
+              ? t("অসাধারণ! তুমি মহাকাশ বিশেষজ্ঞ!", "Amazing! Space Expert!")
+              : percent >= 60
+              ? t("খুব ভালো! চমৎকার খেলেছো!", "Great job! Well played!")
+              : t("ভালো চেষ্টা! আবার খেলো!", "Good try! Play again!")}
+          </h2>
+
+          <div className="my-6 p-4 rounded-2xl bg-[#f0f8ff] border border-[#bae6fd]">
+            <div className="text-5xl font-black text-[#0284c7] font-display">
+              {score} / {total}
             </div>
-            <p className="text-akash-muted mt-2">
-              {percent}% {t("সঠিক", "correct")}
+            <p className="text-xs font-bold text-[#5b6b8a] mt-2">
+              {percent}% {t("সঠিক উত্তর", "Correct")}
             </p>
           </div>
-          <Button onClick={restart} className="bg-akash-gold hover:bg-akash-gold-bright text-akash-night">
-            <RotateCcw className="w-4 h-4 mr-2" />
-            {t("আবার খেলো", "Play again")}
-          </Button>
-        </Card>
+
+          <button
+            onClick={restart}
+            className="btn-primary-grad w-full py-3 text-sm flex items-center justify-center gap-2"
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span>{t("আবার খেলুন", "Play Again")}</span>
+          </button>
+        </div>
       </div>
     );
   }
 
-  // Playing
+  /* ── PLAYING QUIZ ── */
   if (!quiz) return null;
   const question = quiz.questions[qIdx];
   const isBn = lang === "bn";
@@ -240,34 +231,37 @@ export function QuizMode() {
 
   return (
     <div className="max-w-2xl mx-auto w-full">
-      <div className="flex items-center justify-between mb-6">
-        <div className="text-sm text-akash-muted">
-          {t("প্রশ্ন", "Question")} {qIdx + 1}/{quiz.questions.length}
-        </div>
-        <div className="flex gap-1">
-          {quiz.questions.map((_, i) => (
-            <div
-              key={i}
-              className={`w-8 h-1 rounded-full ${
-                i < qIdx
-                  ? answers[i]
-                    ? "bg-akash-gold"
-                    : "bg-akash-purple"
-                  : i === qIdx
-                  ? "bg-akash-cyan"
-                  : "bg-akash-muted/30"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#e0eaf5] shadow-xl">
+        
+        {/* Quiz Progress Row */}
+        <div className="flex items-center justify-between mb-6">
+          <span className="text-xs font-bold text-[#5b6b8a]">
+            {t("প্রশ্ন", "Question")} {qIdx + 1} / {quiz.questions.length}
+          </span>
 
-      <Card className="akash-glass-strong p-6 md:p-8 mb-5">
-        <h3 className={`text-xl md:text-2xl font-bold text-akash-star mb-6 ${isBn ? "font-bn" : ""}`}>
+          <div className="flex gap-1.5">
+            {quiz.questions.map((_, i) => (
+              <div
+                key={i}
+                className={`h-2 rounded-full transition-all ${
+                  i < qIdx
+                    ? answers[i] ? "w-4 bg-emerald-500" : "w-4 bg-red-400"
+                    : i === qIdx
+                    ? "w-6 bg-[#0284c7]"
+                    : "w-2 bg-[#e0eaf5]"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Question Heading */}
+        <h3 className="text-xl sm:text-2xl font-bold text-[#1a2744] mb-6 font-display">
           {isBn ? question.q_bn : question.q_en}
         </h3>
 
-        <div className="space-y-3">
+        {/* Options List */}
+        <div className="space-y-3 mb-6">
           {[0, 1, 2, 3].map((i) => {
             const isCorrect = i === question.correct;
             const isSelected = i === selected;
@@ -278,62 +272,45 @@ export function QuizMode() {
                 key={i}
                 onClick={() => pickAnswer(i)}
                 disabled={showState}
-                className={`w-full text-left p-4 rounded-xl border transition-all flex items-center justify-between ${
+                className={`w-full p-4 rounded-2xl border text-left font-semibold text-sm transition-all flex items-center justify-between ${
                   showState && isCorrect
-                    ? "bg-akash-gold/20 border-akash-gold text-akash-gold-bright"
+                    ? "bg-emerald-50 border-emerald-400 text-emerald-700 shadow-sm"
                     : showState && isSelected && !isCorrect
-                    ? "bg-akash-purple/20 border-akash-purple text-akash-purple-bright"
-                    : "akash-glass text-akash-star hover:border-akash-gold/60"
-                } ${isBn ? "font-bn" : ""}`}
+                    ? "bg-red-50 border-red-400 text-red-700 shadow-sm"
+                    : "bg-[#f0f8ff] border-[#e0eaf5] text-[#1a2744] hover:border-[#38bdf8] hover:bg-[#e3f2fd]"
+                }`}
               >
-                <span className="flex items-center gap-3">
-                  <span className="w-7 h-7 rounded-full border border-current flex items-center justify-center text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="w-7 h-7 rounded-full bg-white border border-[#bae6fd] flex items-center justify-center text-xs font-bold text-[#0284c7]">
                     {String.fromCharCode(65 + i)}
                   </span>
-                  {optText(i)}
-                </span>
-                {showState && isCorrect && <CheckCircle2 className="w-5 h-5 text-akash-gold" />}
-                {showState && isSelected && !isCorrect && (
-                  <XCircle className="w-5 h-5 text-akash-purple-bright" />
-                )}
+                  <span>{optText(i)}</span>
+                </div>
+
+                {showState && isCorrect && <CheckCircle2 className="w-5 h-5 text-emerald-600" />}
+                {showState && isSelected && !isCorrect && <XCircle className="w-5 h-5 text-red-500" />}
               </button>
             );
           })}
         </div>
 
+        {/* Explanation Banner */}
         {showExplain && (
-          <div className="mt-5 p-4 rounded-xl bg-akash-card border border-akash-border akash-fade-up">
-            <p className={`text-sm text-akash-star-dim ${isBn ? "font-bn" : ""}`}>
-              <span className="text-akash-gold font-bold">
-                {answers[answers.length - 1] ? "✓ " : "→ "}
-              </span>
-              {isBn ? question.explain_bn : question.explain_en}
-            </p>
+          <div className="p-4 rounded-2xl bg-[#fff9c4] border border-[#fde68a] text-sm font-bn mb-6 text-[#1a2744]">
+            <span className="font-bold text-[#f59e0b] mr-1">💡 {t("ব্যাখ্যা", "Explanation")}:</span>
+            {isBn ? question.explain_bn : question.explain_en}
           </div>
         )}
-      </Card>
 
-      <div className="flex items-center justify-between">
-        <div className="text-[10px] text-akash-muted uppercase tracking-wider">
-          {t("সূত্র", "Source")}: {quiz.source}
-        </div>
+        {/* Next Button */}
         {showExplain && (
-          <Button
+          <button
             onClick={next}
-            className="bg-akash-cyan hover:bg-akash-cyan-bright text-akash-night"
+            className="btn-primary-grad w-full py-3 text-sm flex items-center justify-center gap-2"
           >
-            {qIdx < quiz.questions.length - 1 ? (
-              <>
-                {t("পরের প্রশ্ন", "Next question")}
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </>
-            ) : (
-              <>
-                <Trophy className="w-4 h-4 mr-1" />
-                {t("ফলাফল দেখো", "See result")}
-              </>
-            )}
-          </Button>
+            <span>{qIdx < quiz.questions.length - 1 ? t("পরের প্রশ্ন", "Next Question") : t("ফলাফল দেখুন", "See Result")}</span>
+            <ChevronRight className="w-4 h-4" />
+          </button>
         )}
       </div>
     </div>
