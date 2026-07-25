@@ -217,13 +217,8 @@ async function callHFInference(
   const repetitionPenalty = options.repetitionPenalty ?? 1.15;
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 
-  // Official Gemma models allowed by competition rules
-  const gemmaModels = [
-    HF_MODEL,
-    "google/gemma-4-12b-it",
-    "google/gemma-3-12b-it",
-    "google/gemma-2-9b-it",
-  ].filter((v, i, a) => a.indexOf(v) === i); // unique
+  // Exclusively target Gemma-4 model: google/gemma-4-12b-it
+  const gemmaModels = [HF_MODEL || "google/gemma-4-12b-it"].filter((v, i, a) => a.indexOf(v) === i);
 
   let lastError: HuggingFaceError | null = null;
 
