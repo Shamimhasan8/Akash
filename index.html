@@ -1,0 +1,3242 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AstroVerse - বাংলাদেশের প্রথম AI-চালিত বাংলা মহাকাশ শিক্ষা প্ল্যাটফর্ম। মহাকাশ সম্পর্কে শিখুন, গল্প শুনুন, কুইজ খেলুন আর AI কে প্রশ্ন করুন।">
+<title>AstroVerse — Explore the Universe. Learn with AI.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Baloo+Da+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================
+   AstroVerse — Complete CSS
+   Default Theme: Light (Sky Blue / Light Blue / Soft Yellow / Purple Accent)
+   ===================================================== */
+
+:root{
+  --bg: #ffffff;
+  --bg-soft: #f0f8ff;
+  --bg-card: #ffffff;
+  --bg-soft-yellow: #fff9c4;
+  --bg-soft-blue: #e3f2fd;
+  --bg-soft-purple: #f3e5f5;
+  --text: #1a2744;
+  --text-soft: #5b6b8a;
+  --text-muted: #8896b3;
+  --sky-blue: #38bdf8;
+  --sky-blue-deep: #0284c7;
+  --light-blue: #bae6fd;
+  --soft-yellow: #fde68a;
+  --yellow-deep: #f59e0b;
+  --purple: #a855f7;
+  --purple-deep: #7e22ce;
+  --purple-soft: #e9d5ff;
+  --pink: #ec4899;
+  --green: #10b981;
+  --red: #ef4444;
+  --orange: #fb923c;
+  --border: #e0eaf5;
+  --shadow-sm: 0 2px 8px rgba(56,189,248,.08);
+  --shadow-md: 0 8px 24px rgba(56,189,248,.12);
+  --shadow-lg: 0 18px 48px rgba(56,189,248,.18);
+  --shadow-purple: 0 8px 24px rgba(168,85,247,.18);
+  --radius-sm: 10px;
+  --radius: 18px;
+  --radius-lg: 28px;
+  --radius-xl: 40px;
+  --font-bn: 'Hind Siliguri','Noto Sans Bengali','Baloo Da 2',system-ui,sans-serif;
+  --font-display: 'Baloo Da 2','Hind Siliguri',system-ui,sans-serif;
+  --font-en: 'Fredoka',system-ui,sans-serif;
+  --nav-h: 70px;
+}
+
+[data-theme="dark"]{
+  --bg: #0a1130;
+  --bg-soft: #0f1a44;
+  --bg-card: #131d4f;
+  --bg-soft-yellow: #3a3322;
+  --bg-soft-blue: #15244d;
+  --bg-soft-purple: #2a1d4a;
+  --text: #e8efff;
+  --text-soft: #a8b8dd;
+  --text-muted: #6a7aa3;
+  --border: #1f2b5e;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.3);
+  --shadow-md: 0 8px 24px rgba(0,0,0,.4);
+  --shadow-lg: 0 18px 48px rgba(0,0,0,.5);
+}
+
+/* Accessibility: large font */
+[data-font="large"]{ font-size: 18px; }
+[data-font="large"] .nav-link{ font-size: 16px; }
+[data-font="large"] h1{ font-size: 3rem; }
+[data-font="large"] h2{ font-size: 2.3rem; }
+
+/* Animation off */
+[data-anim="off"] *{
+  animation-duration: 0.001s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001s !important;
+}
+
+*{ box-sizing: border-box; margin: 0; padding: 0; }
+
+html{ scroll-behavior: smooth; }
+
+body{
+  font-family: var(--font-bn);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  font-size: 16px;
+  transition: background .4s ease, color .4s ease;
+}
+
+a{ color: inherit; text-decoration: none; }
+button{ font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+img{ max-width: 100%; display: block; }
+ul{ list-style: none; }
+
+::selection{ background: var(--soft-yellow); color: var(--text); }
+
+/* Scrollbar */
+::-webkit-scrollbar{ width: 10px; height: 10px; }
+::-webkit-scrollbar-track{ background: var(--bg-soft); }
+::-webkit-scrollbar-thumb{ background: var(--sky-blue); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover{ background: var(--purple); }
+
+/* ===================== NAVBAR ===================== */
+.navbar{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  transition: background .4s ease;
+}
+[data-theme="dark"] .navbar{ background: rgba(10,17,48,.85); }
+
+.nav-brand{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--sky-blue-deep);
+  margin-right: auto;
+}
+[data-theme="dark"] .nav-brand{ color: var(--sky-blue); }
+.nav-brand .logo{
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: var(--shadow-purple);
+  animation: spin 16s linear infinite;
+}
+.nav-brand .brand-text{
+  display: flex; flex-direction: column; line-height: 1;
+}
+.nav-brand .brand-text small{
+  font-size: 9px; color: var(--text-muted);
+  font-weight: 500; letter-spacing: .5px;
+}
+
+.nav-links{
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-link{
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: all .25s ease;
+  white-space: nowrap;
+  position: relative;
+}
+.nav-link:hover{
+  background: var(--bg-soft-blue);
+  color: var(--sky-blue-deep);
+  transform: translateY(-2px);
+}
+.nav-link.active{
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+[data-theme="dark"] .nav-link:hover{ background: var(--bg-soft-blue); color: var(--sky-blue); }
+
+.nav-actions{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+}
+.nav-icon-btn{
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  background: var(--bg-soft);
+  transition: all .25s ease;
+}
+.nav-icon-btn:hover{ background: var(--light-blue); transform: rotate(15deg) scale(1.05); }
+
+.login-btn{
+  padding: 8px 18px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: var(--shadow-md);
+  transition: all .25s ease;
+}
+.login-btn:hover{ transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+.menu-toggle{
+  display: none;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  font-size: 22px;
+  background: var(--bg-soft);
+}
+
+/* Mobile nav drawer */
+.mobile-drawer{
+  position: fixed;
+  top: var(--nav-h); right: -100%;
+  width: 280px;
+  max-width: 80vw;
+  height: calc(100vh - var(--nav-h));
+  background: var(--bg);
+  box-shadow: var(--shadow-lg);
+  z-index: 999;
+  padding: 20px;
+  overflow-y: auto;
+  transition: right .35s ease;
+  border-left: 1px solid var(--border);
+}
+.mobile-drawer.open{ right: 0; }
+.mobile-drawer .nav-link{
+  display: block;
+  padding: 14px;
+  font-size: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ===================== MAIN LAYOUT ===================== */
+.main{
+  padding-top: var(--nav-h);
+  min-height: 100vh;
+}
+
+.page{
+  display: none;
+  animation: fadeIn .5s ease;
+}
+.page.active{ display: block; }
+
+@keyframes fadeIn{
+  from{ opacity: 0; transform: translateY(10px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+.container{
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.section-title{
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--sky-blue-deep), var(--purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.section-sub{
+  color: var(--text-soft);
+  margin-bottom: 32px;
+  font-size: 1.05rem;
+}
+
+/* ===================== HERO ===================== */
+.hero{
+  position: relative;
+  min-height: calc(100vh - var(--nav-h));
+  overflow: hidden;
+  background: linear-gradient(180deg, #cfeafe 0%, #e3f2fd 40%, #fff9c4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+[data-theme="dark"] .hero{
+  background: linear-gradient(180deg, #050828 0%, #0a1130 50%, #1a1147 100%);
+}
+
+/* Starfield */
+.starfield{
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.star{
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle var(--dur,3s) ease-in-out infinite;
+  animation-delay: var(--delay,0s);
+}
+@keyframes twinkle{
+  0%,100%{ opacity: .2; transform: scale(.8); }
+  50%{ opacity: 1; transform: scale(1.4); box-shadow: 0 0 10px #fff; }
+}
+
+/* Solar system */
+.solar-system{
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px; height: 700px;
+  z-index: 2;
+  pointer-events: none;
+}
+@media (max-width: 900px){
+  .solar-system{ width: 480px; height: 480px; opacity: .85; }
+}
+@media (max-width: 600px){
+  .solar-system{ width: 340px; height: 340px; opacity: .7; }
+}
+
+.sun{
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 90px; height: 90px;
+  margin: -45px 0 0 -45px;
+  background: radial-gradient(circle at 35% 35%, #fff7b0, #fde047 40%, #f59e0b 70%, #ea580c);
+  border-radius: 50%;
+  box-shadow:
+    0 0 60px rgba(245,158,11,.8),
+    0 0 120px rgba(245,158,11,.5),
+    0 0 200px rgba(245,158,11,.3);
+  animation: sunPulse 4s ease-in-out infinite;
+  z-index: 5;
+}
+@keyframes sunPulse{
+  0%,100%{ box-shadow: 0 0 60px rgba(245,158,11,.8), 0 0 120px rgba(245,158,11,.5), 0 0 200px rgba(245,158,11,.3); }
+  50%{ box-shadow: 0 0 80px rgba(245,158,11,.9), 0 0 160px rgba(245,158,11,.6), 0 0 260px rgba(245,158,11,.4); }
+}
+
+.orbit{
+  position: absolute;
+  top: 50%; left: 50%;
+  border: 1px dashed rgba(56,189,248,.25);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: orbit linear infinite;
+}
+@keyframes orbit{
+  from{ transform: translate(-50%, -50%) rotate(0deg); }
+  to{ transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.planet{
+  position: absolute;
+  top: 50%;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  box-shadow: inset -4px -4px 8px rgba(0,0,0,.3);
+}
+
+.orbit-mercury{ width: 160px; height: 160px; animation-duration: 8s; }
+.orbit-mercury .planet{
+  left: -8px; width: 16px; height: 16px;
+  background: radial-gradient(circle at 30% 30%, #d6d3d1, #78716c);
+}
+
+.orbit-venus{ width: 220px; height: 220px; animation-duration: 13s; }
+.orbit-venus .planet{
+  left: -12px; width: 24px; height: 24px;
+  background: radial-gradient(circle at 30% 30%, #fef3c7, #f59e0b);
+}
+
+.orbit-earth{ width: 290px; height: 290px; animation-duration: 18s; }
+.orbit-earth .planet{
+  left: -14px; width: 28px; height: 28px;
+  background: radial-gradient(circle at 30% 30%, #93c5fd, #2563eb 60%, #1e40af);
+}
+.orbit-earth .planet::after{
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 8px; height: 8px;
+  margin: -4px 0 0 18px;
+  background: radial-gradient(circle at 30% 30%, #e5e7eb, #9ca3af);
+  border-radius: 50%;
+  animation: moonOrbit 3s linear infinite;
+}
+@keyframes moonOrbit{
+  from{ transform: rotate(0deg) translateX(0); }
+  to{ transform: rotate(360deg) translateX(0); }
+}
+
+.orbit-mars{ width: 370px; height: 370px; animation-duration: 24s; }
+.orbit-mars .planet{
+  left: -12px; width: 22px; height: 22px;
+  background: radial-gradient(circle at 30% 30%, #fca5a5, #dc2626 60%, #991b1b);
+}
+
+.orbit-jupiter{ width: 480px; height: 480px; animation-duration: 32s; }
+.orbit-jupiter .planet{
+  left: -22px; width: 44px; height: 44px;
+  background: radial-gradient(circle at 30% 30%, #fde68a, #d97706 50%, #92400e);
+  background-image: linear-gradient(0deg, transparent 30%, rgba(146,64,14,.5) 30%, rgba(146,64,14,.5) 40%, transparent 40%, transparent 55%, rgba(146,64,14,.4) 55%, rgba(146,64,14,.4) 65%, transparent 65%);
+}
+
+.orbit-saturn{ width: 580px; height: 580px; animation-duration: 40s; }
+.orbit-saturn .planet{
+  left: -18px; width: 36px; height: 36px;
+  background: radial-gradient(circle at 30% 30%, #fef3c7, #d4a574 60%, #92400e);
+}
+.orbit-saturn .planet::before{
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 60px; height: 14px;
+  margin: -7px 0 0 -30px;
+  background: linear-gradient(90deg, transparent, #d4a574 30%, #fef3c7 50%, #d4a574 70%, transparent);
+  border-radius: 50%;
+  transform: rotate(-20deg);
+  opacity: .85;
+}
+
+.orbit-uranus{ width: 660px; height: 660px; animation-duration: 50s; }
+.orbit-uranus .planet{
+  left: -14px; width: 28px; height: 28px;
+  background: radial-gradient(circle at 30% 30%, #cffafe, #06b6d4 60%, #0e7490);
+}
+
+.orbit-neptune{ width: 720px; height: 720px; animation-duration: 60s; }
+.orbit-neptune .planet{
+  left: -14px; width: 26px; height: 26px;
+  background: radial-gradient(circle at 30% 30%, #bfdbfe, #3b82f6 60%, #1e3a8a);
+}
+
+/* Astronaut */
+.astronaut{
+  position: absolute;
+  top: 18%; left: 12%;
+  font-size: 50px;
+  z-index: 6;
+  animation: floatAstro 6s ease-in-out infinite;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,.2));
+}
+@keyframes floatAstro{
+  0%,100%{ transform: translateY(0) rotate(-5deg); }
+  50%{ transform: translateY(-20px) rotate(5deg); }
+}
+@media (max-width: 600px){ .astronaut{ font-size: 32px; top: 12%; left: 5%; } }
+
+/* Rocket */
+.rocket{
+  position: absolute;
+  bottom: 10%; left: 8%;
+  font-size: 44px;
+  z-index: 7;
+  animation: rocketLaunch 12s ease-in-out infinite;
+}
+@keyframes rocketLaunch{
+  0%{ transform: translate(0,0) rotate(-45deg); opacity: 0; }
+  10%{ opacity: 1; }
+  60%{ transform: translate(60vw,-50vh) rotate(-45deg); opacity: 1; }
+  70%{ opacity: 0; }
+  100%{ transform: translate(60vw,-50vh) rotate(-45deg); opacity: 0; }
+}
+@media (max-width: 600px){ .rocket{ font-size: 28px; } }
+
+/* Satellite */
+.satellite{
+  position: absolute;
+  top: 30%; right: 14%;
+  font-size: 32px;
+  z-index: 6;
+  animation: satOrbit 14s linear infinite;
+}
+@keyframes satOrbit{
+  0%{ transform: translate(0,0) rotate(0deg); }
+  25%{ transform: translate(-40px,30px) rotate(90deg); }
+  50%{ transform: translate(-80px,0) rotate(180deg); }
+  75%{ transform: translate(-40px,-30px) rotate(270deg); }
+  100%{ transform: translate(0,0) rotate(360deg); }
+}
+
+/* Comet */
+.comet{
+  position: absolute;
+  top: 20%; right: -100px;
+  width: 4px; height: 4px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 12px 4px #fff;
+  z-index: 5;
+  animation: comet 10s linear infinite;
+  animation-delay: 4s;
+}
+.comet::after{
+  content: '';
+  position: absolute;
+  top: 50%; right: 0;
+  width: 80px; height: 2px;
+  background: linear-gradient(90deg, transparent, #fff);
+  transform: translateY(-50%);
+}
+@keyframes comet{
+  0%{ transform: translate(0,0); opacity: 0; }
+  10%{ opacity: 1; }
+  60%{ opacity: 1; }
+  70%{ opacity: 0; }
+  100%{ transform: translate(-120vw, 80vh); opacity: 0; }
+}
+
+/* Hero content */
+.hero-content{
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 40px 24px;
+  max-width: 720px;
+}
+.hero-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: rgba(255,255,255,.85);
+  border: 1px solid var(--light-blue);
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sky-blue-deep);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(8px);
+}
+[data-theme="dark"] .hero-badge{ background: rgba(19,29,79,.85); color: var(--sky-blue); border-color: var(--purple); }
+
+.hero-title{
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  color: var(--text);
+  text-shadow: 0 4px 20px rgba(56,189,248,.3);
+}
+.hero-title .grad{
+  background: linear-gradient(135deg, var(--sky-blue-deep), var(--purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-subtitle{
+  font-size: clamp(1rem, 2.2vw, 1.3rem);
+  color: var(--text-soft);
+  margin-bottom: 32px;
+  font-weight: 500;
+}
+
+.hero-buttons{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+.btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 26px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all .25s ease;
+  white-space: nowrap;
+  border: 2px solid transparent;
+}
+.btn-primary{
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+.btn-primary:hover{ transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.btn-secondary{
+  background: #fff;
+  color: var(--text);
+  border-color: var(--light-blue);
+  box-shadow: var(--shadow-sm);
+}
+[data-theme="dark"] .btn-secondary{ background: var(--bg-card); }
+.btn-secondary:hover{ transform: translateY(-3px); border-color: var(--sky-blue); }
+.btn-yellow{
+  background: linear-gradient(135deg, var(--soft-yellow), var(--yellow-deep));
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+.btn-yellow:hover{ transform: translateY(-3px); }
+.btn-purple{
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  color: #fff;
+  box-shadow: var(--shadow-purple);
+}
+.btn-purple:hover{ transform: translateY(-3px); }
+
+.hero-stats{
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.hero-stat{
+  text-align: center;
+}
+.hero-stat .num{
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--purple-deep);
+}
+[data-theme="dark"] .hero-stat .num{ color: var(--purple); }
+.hero-stat .lbl{ font-size: 13px; color: var(--text-soft); }
+
+/* Scroll indicator */
+.scroll-ind{
+  position: absolute;
+  bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 26px;
+  color: var(--purple);
+  z-index: 10;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce{
+  0%,100%{ transform: translate(-50%, 0); }
+  50%{ transform: translate(-50%, 12px); }
+}
+
+/* ===================== CARDS GRID ===================== */
+.cards-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+  margin-top: 24px;
+}
+.card{
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 26px 22px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: all .3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.card::before{
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+  background: linear-gradient(90deg, var(--sky-blue), var(--purple));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .35s ease;
+}
+.card:hover{
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+.card:hover::before{ transform: scaleX(1); }
+.card-emoji{
+  font-size: 48px;
+  margin-bottom: 12px;
+  display: inline-block;
+  transition: transform .35s ease;
+}
+.card:hover .card-emoji{ transform: scale(1.15) rotate(-8deg); }
+.card-title{
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.card-desc{
+  color: var(--text-soft);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.card-cta{
+  margin-top: 14px;
+  font-weight: 600;
+  color: var(--sky-blue-deep);
+  font-size: 13px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+[data-theme="dark"] .card-cta{ color: var(--sky-blue); }
+
+/* Feature card variants */
+.card-yellow{ background: linear-gradient(135deg, var(--bg-soft-yellow), #fff); }
+.card-blue{ background: linear-gradient(135deg, var(--bg-soft-blue), #fff); }
+.card-purple{ background: linear-gradient(135deg, var(--bg-soft-purple), #fff); }
+[data-theme="dark"] .card-yellow,
+[data-theme="dark"] .card-blue,
+[data-theme="dark"] .card-purple{ background: var(--bg-card); }
+
+/* ===================== PAGE HEADER ===================== */
+.page-header{
+  background: linear-gradient(135deg, var(--bg-soft-blue), var(--bg-soft-purple));
+  padding: 48px 24px 36px;
+  text-align: center;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="dark"] .page-header{ background: linear-gradient(135deg, var(--bg-soft-blue), var(--bg-soft-purple)); }
+.page-header::before{
+  content: '';
+  position: absolute;
+  top: -50%; right: -10%;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(168,85,247,.15), transparent 70%);
+  border-radius: 50%;
+}
+.page-header h1{
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  margin-bottom: 10px;
+  position: relative;
+}
+.page-header p{
+  color: var(--text-soft);
+  font-size: 1.05rem;
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ===================== LEARNING SUB-NAV ===================== */
+.sub-nav{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 14px;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+.sub-nav-item{
+  padding: 10px 18px;
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 14px;
+  background: var(--bg-soft);
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: all .25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.sub-nav-item:hover{ background: var(--light-blue); color: var(--sky-blue-deep); }
+.sub-nav-item.active{
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+
+/* ===================== AI CHAT (জিজ্ঞাসা) ===================== */
+.ai-wrap{
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 22px;
+  margin-top: 16px;
+}
+@media (max-width: 900px){ .ai-wrap{ grid-template-columns: 1fr; } }
+
+.ai-main{
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 560px;
+}
+.ai-header{
+  padding: 18px 22px;
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ai-header .avatar{
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  animation: pulse 2s infinite;
+}
+.ai-header .info h3{ font-family: var(--font-display); font-size: 1.1rem; }
+.ai-header .info p{ font-size: 12px; opacity: .9; }
+.ai-header .info .status{
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.ai-header .info .status::before{
+  content: '';
+  width: 8px; height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #4ade80;
+}
+
+.ai-messages{
+  flex: 1;
+  padding: 22px;
+  overflow-y: auto;
+  max-height: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--bg-soft);
+}
+.ai-msg{
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  animation: msgIn .35s ease;
+}
+@keyframes msgIn{ from{ opacity:0; transform: translateY(8px);} to{opacity:1; transform:translateY(0);} }
+.ai-msg.user{
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.ai-msg.bot{
+  align-self: flex-start;
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.ai-msg.bot .bot-avatar{
+  display: inline-block;
+  margin-right: 6px;
+}
+.ai-msg.typing{
+  display: inline-flex;
+  gap: 4px;
+  align-self: flex-start;
+}
+.ai-msg.typing span{
+  width: 8px; height: 8px;
+  background: var(--purple);
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+.ai-msg.typing span:nth-child(2){ animation-delay: .2s; }
+.ai-msg.typing span:nth-child(3){ animation-delay: .4s; }
+@keyframes typing{
+  0%,60%,100%{ transform: translateY(0); opacity: .4; }
+  30%{ transform: translateY(-8px); opacity: 1; }
+}
+
+.ai-actions{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 16px 0;
+  border-top: 1px solid var(--border);
+}
+.ai-action-btn{
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  background: var(--bg-soft);
+  color: var(--text-soft);
+  border: 1px solid var(--border);
+  transition: all .2s ease;
+}
+.ai-action-btn:hover{ background: var(--light-blue); color: var(--sky-blue-deep); }
+
+.ai-input{
+  padding: 14px 18px;
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.ai-input input{
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 24px;
+  border: 2px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .25s ease;
+}
+.ai-input input:focus{ border-color: var(--sky-blue); }
+.ai-input button{
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .2s ease;
+}
+.ai-input button:hover{ transform: scale(1.08); }
+.ai-input .voice-btn{
+  background: var(--bg-soft);
+  color: var(--purple);
+}
+
+.ai-side{
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.ai-side-card{
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.ai-side-card h4{
+  font-family: var(--font-display);
+  font-size: 1rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--purple-deep);
+}
+[data-theme="dark"] .ai-side-card h4{ color: var(--purple); }
+.ai-side-card .chip{
+  display: block;
+  padding: 10px 14px;
+  background: var(--bg-soft);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all .2s ease;
+  border: 1px solid transparent;
+}
+.ai-side-card .chip:hover{
+  background: var(--light-blue);
+  border-color: var(--sky-blue);
+  transform: translateX(4px);
+}
+
+/* ===================== STORIES ===================== */
+.story-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px,1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.story-card{
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 22px 16px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all .3s ease;
+}
+.story-card:hover{
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, var(--bg-soft-blue), var(--bg-card));
+}
+.story-card .emoji{ font-size: 44px; margin-bottom: 8px; }
+.story-card h4{ font-family: var(--font-display); font-size: 1rem; margin-bottom: 4px; }
+.story-card p{ font-size: 12px; color: var(--text-soft); }
+
+.story-viewer{
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  margin-top: 24px;
+  display: none;
+}
+.story-viewer.show{ display: block; animation: fadeIn .5s ease; }
+.story-viewer .illustration{
+  text-align: center;
+  font-size: 80px;
+  margin-bottom: 16px;
+  animation: floatAstro 4s ease-in-out infinite;
+}
+.story-viewer h2{
+  font-family: var(--font-display);
+  text-align: center;
+  margin-bottom: 16px;
+  color: var(--purple-deep);
+}
+[data-theme="dark"] .story-viewer h2{ color: var(--purple); }
+.story-viewer .story-text{
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: var(--text);
+  margin-bottom: 24px;
+  padding: 20px;
+  background: var(--bg-soft-yellow);
+  border-radius: var(--radius);
+  border-left: 5px solid var(--yellow-deep);
+}
+[data-theme="dark"] .story-viewer .story-text{ background: var(--bg-soft-yellow); }
+.story-controls{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ===================== QUIZ ===================== */
+.quiz-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.quiz-card{
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-soft-blue));
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all .3s ease;
+}
+.quiz-card:hover{
+  border-color: var(--sky-blue);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.quiz-card .icon{ font-size: 42px; margin-bottom: 8px; }
+.quiz-card h4{ font-family: var(--font-display); margin-bottom: 6px; }
+.quiz-card .meta{ font-size: 12px; color: var(--text-soft); }
+
+.quiz-modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(10,17,48,.75);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.quiz-modal.show{ display: flex; animation: fadeIn .3s ease; }
+.quiz-box{
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+}
+.quiz-progress{
+  height: 8px;
+  background: var(--bg-soft);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.quiz-progress-bar{
+  height: 100%;
+  background: linear-gradient(90deg, var(--sky-blue), var(--purple));
+  border-radius: 4px;
+  transition: width .4s ease;
+}
+.quiz-q{
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
+.quiz-option{
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  background: var(--bg-soft);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 15px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.quiz-option:hover{ border-color: var(--sky-blue); transform: translateX(4px); }
+.quiz-option.correct{
+  background: rgba(16,185,129,.15);
+  border-color: var(--green);
+  color: var(--green);
+  font-weight: 600;
+}
+.quiz-option.wrong{
+  background: rgba(239,68,68,.15);
+  border-color: var(--red);
+  color: var(--red);
+}
+.quiz-explain{
+  margin-top: 16px;
+  padding: 14px;
+  background: var(--bg-soft-yellow);
+  border-radius: var(--radius);
+  font-size: 14px;
+  display: none;
+}
+.quiz-explain.show{ display: block; animation: fadeIn .3s ease; }
+
+/* ===================== EXPLORE PLANETS ===================== */
+.planet-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+  gap: 22px;
+}
+.planet-card{
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 26px 20px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all .35s ease;
+  position: relative;
+  overflow: hidden;
+}
+.planet-card:hover{
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+.planet-visual{
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  margin: 0 auto 14px;
+  position: relative;
+  animation: planetSpin 8s linear infinite;
+  box-shadow: inset -10px -10px 20px rgba(0,0,0,.4);
+}
+@keyframes planetSpin{
+  from{ box-shadow: inset -10px -10px 20px rgba(0,0,0,.4); }
+  50%{ box-shadow: inset 10px -10px 20px rgba(0,0,0,.4); }
+  to{ box-shadow: inset -10px -10px 20px rgba(0,0,0,.4); }
+}
+.planet-card h4{
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+}
+.planet-card .name-en{ font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+.planet-card .fact{ font-size: 13px; color: var(--text-soft); }
+
+/* Planet detail modal */
+.planet-modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(10,17,48,.85);
+  backdrop-filter: blur(10px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.planet-modal.show{ display: flex; animation: fadeIn .3s ease; }
+.planet-modal-content{
+  background: var(--bg);
+  border-radius: var(--radius-xl);
+  max-width: 760px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+}
+.planet-modal-header{
+  padding: 40px 30px 24px;
+  text-align: center;
+  position: relative;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+.planet-modal-header .big-planet{
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  animation: spin 12s linear infinite;
+  box-shadow: inset -16px -16px 32px rgba(0,0,0,.4), 0 0 60px rgba(56,189,248,.3);
+}
+.planet-modal-header h2{
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--purple-deep);
+}
+[data-theme="dark"] .planet-modal-header h2{ color: var(--purple); }
+.planet-modal-body{
+  padding: 24px 30px 30px;
+}
+.facts-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+.fact-item{
+  background: var(--bg-soft);
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--sky-blue);
+}
+.fact-item .lbl{ font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+.fact-item .val{ font-weight: 600; color: var(--text); }
+
+.planet-desc{
+  line-height: 1.8;
+  color: var(--text-soft);
+  margin: 16px 0;
+}
+
+/* ===================== NEWS ===================== */
+.news-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+  gap: 22px;
+}
+.news-card{
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all .3s ease;
+}
+.news-card:hover{ transform: translateY(-5px); box-shadow: var(--shadow-md); }
+.news-thumb{
+  height: 160px;
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  position: relative;
+}
+.news-thumb::after{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,.3));
+}
+.news-tag{
+  position: absolute;
+  top: 12px; left: 12px;
+  padding: 4px 10px;
+  background: rgba(255,255,255,.9);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--purple-deep);
+  z-index: 2;
+}
+.news-body{ padding: 18px; }
+.news-date{ font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+.news-card h4{
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.news-card p{ font-size: 13px; color: var(--text-soft); }
+
+/* ===================== THINGS TO DO ===================== */
+.activity-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+  gap: 18px;
+}
+.activity-card{
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 24px 18px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all .3s ease;
+}
+.activity-card:hover{ transform: translateY(-4px) rotate(-1deg); box-shadow: var(--shadow-md); }
+.activity-card .icon{ font-size: 44px; margin-bottom: 10px; }
+.activity-card h4{ font-family: var(--font-display); font-size: 1.05rem; margin-bottom: 4px; }
+.activity-card p{ font-size: 12px; color: var(--text-soft); }
+.activity-card .tag{
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 10px;
+  background: var(--bg-soft);
+  border-radius: 10px;
+  font-size: 11px;
+  color: var(--text-soft);
+}
+
+/* ===================== MULTIMEDIA ===================== */
+.media-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+  gap: 16px;
+}
+.media-item{
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all .3s ease;
+  position: relative;
+}
+.media-item:hover{ transform: scale(1.03); box-shadow: var(--shadow-md); }
+.media-thumb{
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  position: relative;
+}
+.media-thumb::after{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,.4));
+}
+.media-overlay{
+  position: absolute;
+  bottom: 12px; left: 12px; right: 12px;
+  color: #fff;
+  z-index: 2;
+  font-size: 13px;
+  font-weight: 600;
+}
+.media-body{ padding: 12px 14px; }
+.media-body h5{ font-family: var(--font-display); font-size: 14px; }
+.media-body p{ font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* ===================== FLOATING AI ASSISTANT ===================== */
+.fab-ai{
+  position: fixed;
+  bottom: 24px; right: 24px;
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  font-size: 28px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-lg);
+  z-index: 1500;
+  cursor: pointer;
+  transition: all .3s ease;
+  animation: pulse 2s infinite;
+}
+.fab-ai:hover{ transform: scale(1.1) rotate(10deg); }
+.fab-ai .badge{
+  position: absolute;
+  top: -4px; right: -4px;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+@keyframes pulse{
+  0%,100%{ box-shadow: var(--shadow-lg), 0 0 0 0 rgba(168,85,247,.4); }
+  50%{ box-shadow: var(--shadow-lg), 0 0 0 16px rgba(168,85,247,0); }
+}
+
+.fab-panel{
+  position: fixed;
+  bottom: 100px; right: 24px;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  height: 520px;
+  max-height: calc(100vh - 140px);
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  z-index: 1500;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp .35s ease;
+}
+.fab-panel.show{ display: flex; }
+@keyframes slideUp{
+  from{ opacity: 0; transform: translateY(20px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+.fab-header{
+  padding: 16px;
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.fab-header .info{ display: flex; align-items: center; gap: 10px; }
+.fab-header .info .avatar{
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.fab-header h4{ font-family: var(--font-display); font-size: 14px; }
+.fab-header p{ font-size: 11px; opacity: .85; }
+.fab-close{ color: #fff; font-size: 22px; width: 32px; height: 32px; }
+
+.fab-quick{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+}
+.fab-quick .qbtn{
+  font-size: 11px;
+  padding: 5px 10px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  cursor: pointer;
+}
+.fab-quick .qbtn:hover{ background: var(--light-blue); color: var(--sky-blue-deep); }
+
+.fab-messages{
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg-soft);
+}
+.fab-input{
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  gap: 8px;
+}
+.fab-input input{
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+.fab-input input:focus{ border-color: var(--sky-blue); }
+.fab-input button{
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  font-size: 16px;
+}
+
+/* ===================== ACHIEVEMENTS ===================== */
+.achievements-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+  gap: 16px;
+}
+.achv-badge{
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 22px 14px;
+  text-align: center;
+  border: 2px solid var(--border);
+  transition: all .3s ease;
+  position: relative;
+}
+.achv-badge.unlocked{
+  border-color: var(--yellow-deep);
+  background: linear-gradient(135deg, var(--bg-soft-yellow), var(--bg-card));
+  box-shadow: var(--shadow-sm);
+}
+.achv-badge.unlocked::before{
+  content: '✓';
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 22px; height: 22px;
+  background: var(--green);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.achv-badge .emoji{ font-size: 38px; margin-bottom: 8px; filter: grayscale(1); opacity: .5; }
+.achv-badge.unlocked .emoji{ filter: none; opacity: 1; animation: bounce 2s infinite; }
+.achv-badge h5{ font-family: var(--font-display); font-size: 13px; margin-bottom: 4px; }
+.achv-badge p{ font-size: 11px; color: var(--text-muted); }
+
+/* ===================== PROFILE ===================== */
+.profile-wrap{
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 22px;
+  margin-top: 16px;
+}
+@media (max-width: 800px){ .profile-wrap{ grid-template-columns: 1fr; } }
+
+.profile-card{
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+.profile-avatar{
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 56px;
+  box-shadow: var(--shadow-lg);
+}
+.profile-name{ font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 4px; }
+.profile-level{
+  display: inline-block;
+  padding: 4px 14px;
+  background: linear-gradient(135deg, var(--soft-yellow), var(--yellow-deep));
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.profile-xp-bar{
+  height: 12px;
+  background: var(--bg-soft);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+.profile-xp-fill{
+  height: 100%;
+  background: linear-gradient(90deg, var(--sky-blue), var(--purple));
+  border-radius: 6px;
+  transition: width .6s ease;
+}
+.profile-stats{
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+.profile-stat{
+  background: var(--bg-soft);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+.profile-stat .v{
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--purple-deep);
+  display: block;
+}
+[data-theme="dark"] .profile-stat .v{ color: var(--purple); }
+
+/* ===================== EXTRA FEATURES WIDGETS ===================== */
+.widgets-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+  gap: 18px;
+}
+.widget{
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 20px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.widget h4{
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.widget h4 .live{
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  border-radius: 10px;
+  animation: pulse 1.5s infinite;
+}
+
+/* ISS Tracker */
+.iss-tracker{
+  position: relative;
+  height: 200px;
+  background: radial-gradient(ellipse at center, #1e3a8a, #0a1130);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 10px 0;
+}
+.iss-map{
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 25% 35%, rgba(16,185,129,.5) 0 12%, transparent 13%),
+    radial-gradient(circle at 70% 30%, rgba(16,185,129,.5) 0 8%, transparent 9%),
+    radial-gradient(circle at 35% 65%, rgba(16,185,129,.5) 0 10%, transparent 11%),
+    radial-gradient(circle at 65% 70%, rgba(16,185,129,.5) 0 6%, transparent 7%),
+    radial-gradient(circle at 80% 60%, rgba(16,185,129,.5) 0 5%, transparent 6%);
+}
+.iss-dot{
+  position: absolute;
+  width: 14px; height: 14px;
+  background: var(--yellow-deep);
+  border-radius: 50%;
+  box-shadow: 0 0 20px var(--yellow-deep);
+  z-index: 2;
+  transition: all 2s linear;
+}
+.iss-dot::after{
+  content: '🛰️';
+  position: absolute;
+  top: -22px; left: -8px;
+  font-size: 20px;
+}
+.iss-info{
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+/* Moon phase */
+.moon-vis{
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  margin: 10px auto;
+  background: var(--bg-soft);
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset -8px -8px 16px rgba(0,0,0,.3);
+}
+.moon-shadow{
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  border-radius: 50%;
+  transform: translateX(var(--phase, 50%));
+  transition: transform .6s ease;
+}
+
+/* Sunrise sunset */
+.sun-arc{
+  position: relative;
+  height: 120px;
+  margin: 14px 0;
+}
+.sun-arc-line{
+  position: absolute;
+  bottom: 20px; left: 10%; right: 10%;
+  height: 100px;
+  border: 2px dashed var(--border);
+  border-bottom: none;
+  border-radius: 100px 100px 0 0;
+}
+.sun-arc-dot{
+  position: absolute;
+  width: 28px; height: 28px;
+  background: radial-gradient(circle, var(--soft-yellow), var(--yellow-deep));
+  border-radius: 50%;
+  box-shadow: 0 0 20px var(--yellow-deep);
+  transition: all 1s ease;
+}
+
+/* Daily challenge */
+.challenge-card{
+  background: linear-gradient(135deg, var(--bg-soft-purple), var(--bg-card));
+  padding: 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.challenge-q{ font-weight: 600; margin-bottom: 12px; }
+.challenge-options{ display: flex; flex-direction: column; gap: 8px; }
+.challenge-options button{
+  text-align: left;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  transition: all .2s ease;
+}
+.challenge-options button:hover{ background: var(--light-blue); border-color: var(--sky-blue); }
+
+/* Streak */
+.streak-vis{
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  margin: 14px 0;
+}
+.streak-day{
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  background: var(--bg-soft);
+  border-radius: 6px;
+  font-size: 11px;
+}
+.streak-day.done{
+  background: linear-gradient(135deg, var(--orange), var(--red));
+  color: #fff;
+  font-weight: 600;
+}
+.streak-day.today{
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  font-weight: 600;
+}
+.streak-flame{
+  font-size: 32px;
+  text-align: center;
+  animation: bounce 1.5s infinite;
+}
+
+/* XP bar */
+.xp-display{
+  text-align: center;
+  padding: 10px;
+}
+.xp-num{
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* On this day */
+.otd-card{
+  background: var(--bg-soft-yellow);
+  padding: 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  line-height: 1.6;
+  border-left: 4px solid var(--yellow-deep);
+}
+
+/* Search */
+.global-search{
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto 28px;
+}
+.global-search input{
+  width: 100%;
+  padding: 14px 50px 14px 22px;
+  border-radius: 30px;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+  box-shadow: var(--shadow-sm);
+  transition: border-color .25s ease;
+}
+.global-search input:focus{ border-color: var(--sky-blue); }
+.global-search .icon{
+  position: absolute;
+  right: 18px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--text-muted);
+}
+.search-results{
+  margin-top: 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  max-height: 400px;
+  overflow-y: auto;
+  display: none;
+}
+.search-results.show{ display: block; }
+.search-result-item{
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.search-result-item:hover{ background: var(--bg-soft); }
+.search-result-item:last-child{ border-bottom: none; }
+.search-result-item .ttl{ font-weight: 600; }
+.search-result-item .desc{ font-size: 12px; color: var(--text-soft); margin-top: 2px; }
+
+/* Favorites */
+.fav-toggle{
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,.9);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  z-index: 5;
+  cursor: pointer;
+}
+.fav-toggle.active{ color: var(--red); }
+
+/* Toast */
+.toast{
+  position: fixed;
+  top: 90px; left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 14px 24px;
+  border-radius: 30px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  z-index: 3000;
+  font-weight: 600;
+  transition: transform .4s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.toast.show{ transform: translateX(-50%) translateY(0); }
+.toast.success{ border-color: var(--green); }
+.toast.error{ border-color: var(--red); }
+.toast.info{ border-color: var(--sky-blue); }
+
+/* Certificate */
+.certificate{
+  background: linear-gradient(135deg, #fff9c4, #fff);
+  border: 4px double var(--yellow-deep);
+  border-radius: var(--radius);
+  padding: 40px 30px;
+  text-align: center;
+  margin-top: 20px;
+  position: relative;
+}
+.certificate::before, .certificate::after{
+  content: '⭐';
+  position: absolute;
+  font-size: 24px;
+}
+.certificate::before{ top: 12px; left: 12px; }
+.certificate::after{ top: 12px; right: 12px; }
+.certificate h2{
+  font-family: var(--font-display);
+  color: var(--yellow-deep);
+  margin-bottom: 12px;
+  font-size: 1.8rem;
+}
+.certificate p{ margin: 8px 0; }
+.certificate .name{ font-size: 1.4rem; font-weight: 700; color: var(--purple-deep); margin: 16px 0; }
+
+/* Settings */
+.settings-group{
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 22px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 18px;
+}
+.settings-group h3{
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.setting-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.setting-row:last-child{ border-bottom: none; }
+.setting-row .lbl{ font-weight: 500; }
+.setting-row .desc{ font-size: 12px; color: var(--text-soft); }
+
+.toggle-switch{
+  width: 48px; height: 26px;
+  background: var(--bg-soft);
+  border-radius: 13px;
+  position: relative;
+  cursor: pointer;
+  transition: background .25s ease;
+  border: 1px solid var(--border);
+}
+.toggle-switch.on{ background: linear-gradient(135deg, var(--sky-blue), var(--purple)); border-color: transparent; }
+.toggle-switch::after{
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 20px; height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform .25s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,.2);
+}
+.toggle-switch.on::after{ transform: translateX(22px); }
+
+.option-pills{ display: flex; gap: 6px; flex-wrap: wrap; }
+.option-pill{
+  padding: 6px 14px;
+  border-radius: 16px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.option-pill.active{
+  background: linear-gradient(135deg, var(--sky-blue), var(--purple));
+  color: #fff;
+  border-color: transparent;
+}
+
+/* About */
+.about-hero{
+  text-align: center;
+  padding: 40px 24px;
+  background: linear-gradient(135deg, var(--bg-soft-blue), var(--bg-soft-purple));
+  border-radius: var(--radius-lg);
+  margin-bottom: 28px;
+}
+.about-hero .logo-big{
+  font-size: 80px;
+  margin-bottom: 16px;
+  animation: spin 12s linear infinite;
+  display: inline-block;
+}
+.about-hero h1{
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--sky-blue-deep), var(--purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.about-hero p{ color: var(--text-soft); max-width: 600px; margin: 0 auto; }
+.about-features{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+.about-feature{
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 22px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.about-feature .icon{ font-size: 40px; margin-bottom: 10px; }
+.about-feature h4{ font-family: var(--font-display); margin-bottom: 6px; }
+.about-feature p{ font-size: 13px; color: var(--text-soft); }
+
+/* Footer */
+.footer{
+  background: var(--bg-soft);
+  padding: 40px 24px 20px;
+  margin-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.footer-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.footer-col h5{
+  font-family: var(--font-display);
+  margin-bottom: 12px;
+  color: var(--purple-deep);
+}
+[data-theme="dark"] .footer-col h5{ color: var(--purple); }
+.footer-col a{
+  display: block;
+  color: var(--text-soft);
+  font-size: 14px;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: color .2s ease;
+}
+.footer-col a:hover{ color: var(--sky-blue-deep); }
+.footer-bottom{
+  text-align: center;
+  padding-top: 24px;
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* Generic utilities */
+.text-center{ text-align: center; }
+.mt-2{ margin-top: 16px; }
+.mt-3{ margin-top: 24px; }
+.mb-2{ margin-bottom: 16px; }
+.mb-3{ margin-bottom: 24px; }
+.flex{ display: flex; }
+.flex-wrap{ flex-wrap: wrap; }
+.gap-2{ gap: 12px; }
+.justify-center{ justify-content: center; }
+.align-center{ align-items: center; }
+.hidden{ display: none !important; }
+.badge-tag{
+  display: inline-block;
+  padding: 3px 10px;
+  background: var(--bg-soft);
+  border-radius: 12px;
+  font-size: 11px;
+  color: var(--text-soft);
+  margin: 2px;
+}
+
+@keyframes spin{ from{ transform: rotate(0deg);} to{ transform: rotate(360deg);} }
+
+/* Responsive */
+@media (max-width: 900px){
+  .nav-links{ display: none; }
+  .menu-toggle{ display: flex; align-items: center; justify-content: center; }
+  .nav-actions .login-btn{ display: none; }
+  .container{ padding: 24px 16px; }
+  .section-title{ font-size: 1.8rem; }
+  .hero{ min-height: 90vh; }
+  .hero-stats{ gap: 18px; }
+}
+@media (max-width: 600px){
+  .nav-brand .brand-text small{ display: none; }
+  .nav-brand{ font-size: 18px; }
+  .nav-brand .logo{ width: 32px; height: 32px; font-size: 16px; }
+  .hero-title{ font-size: 2rem; }
+  .hero-buttons .btn{ flex: 1; min-width: 140px; justify-content: center; }
+  .cards-grid{ grid-template-columns: 1fr; }
+  .page-header{ padding: 32px 16px 24px; }
+  .fab-ai{ width: 56px; height: 56px; font-size: 24px; bottom: 16px; right: 16px; }
+  .fab-panel{ bottom: 80px; right: 16px; }
+}
+</style>
+</head>
+<body>
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar">
+  <a class="nav-brand" onclick="goPage('home')">
+    <span class="logo">🪐</span>
+    <span class="brand-text">
+      AstroVerse
+      <small>Explore · Learn · AI</small>
+    </span>
+  </a>
+  <ul class="nav-links">
+    <li><a class="nav-link active" data-page="home" onclick="goPage('home')">🏠 হোম</a></li>
+    <li><a class="nav-link" data-page="learning" onclick="goPage('learning')">📚 শেখা</a></li>
+    <li><a class="nav-link" data-page="explore" onclick="goPage('explore')">🪐 ঘুরে দেখুন</a></li>
+    <li><a class="nav-link" data-page="news" onclick="goPage('news')">📰 সংবাদ</a></li>
+    <li><a class="nav-link" data-page="things" onclick="goPage('things')">🎮 খেলা</a></li>
+    <li><a class="nav-link" data-page="multimedia" onclick="goPage('multimedia')">🎥 মাল্টিমিডিয়া</a></li>
+    <li><a class="nav-link" data-page="ai" onclick="goPage('ai')">🤖 AI</a></li>
+    <li><a class="nav-link" data-page="about" onclick="goPage('about')">ℹ️ পরিচিতি</a></li>
+    <li><a class="nav-link" data-page="settings" onclick="goPage('settings')">⚙️ সেটিংস</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="nav-icon-btn" onclick="toggleSearch()" title="সার্চ">🔍</button>
+    <button class="nav-icon-btn" onclick="toggleTheme()" title="থিম" id="themeBtn">🌙</button>
+    <button class="nav-icon-btn" onclick="goPage('profile')" title="প্রোফাইল">👤</button>
+    <button class="login-btn" onclick="goPage('profile')">লগইন</button>
+    <button class="menu-toggle" onclick="toggleDrawer()">☰</button>
+  </div>
+</nav>
+
+<!-- ============ MOBILE DRAWER ============ -->
+<aside class="mobile-drawer" id="mobileDrawer">
+  <a class="nav-link" onclick="goPage('home'); closeDrawer()">🏠 হোম</a>
+  <a class="nav-link" onclick="goPage('learning'); closeDrawer()">📚 শেখা</a>
+  <a class="nav-link" onclick="goPage('explore'); closeDrawer()">🪐 ঘুরে দেখুন</a>
+  <a class="nav-link" onclick="goPage('news'); closeDrawer()">📰 সংবাদ</a>
+  <a class="nav-link" onclick="goPage('things'); closeDrawer()">🎮 খেলা</a>
+  <a class="nav-link" onclick="goPage('multimedia'); closeDrawer()">🎥 মাল্টিমিডিয়া</a>
+  <a class="nav-link" onclick="goPage('ai'); closeDrawer()">🤖 AI সহায়ক</a>
+  <a class="nav-link" onclick="goPage('about'); closeDrawer()">ℹ️ পরিচিতি</a>
+  <a class="nav-link" onclick="goPage('settings'); closeDrawer()">⚙️ সেটিংস</a>
+  <a class="nav-link" onclick="goPage('profile'); closeDrawer()">👤 প্রোফাইল</a>
+</aside>
+<!-- ============ MAIN ============ -->
+<main class="main">
+
+<!-- ============ HOME PAGE ============ -->
+<section class="page active" id="page-home">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="starfield" id="starfield"></div>
+    <div class="solar-system">
+      <div class="sun"></div>
+      <div class="orbit orbit-mercury"><div class="planet"></div></div>
+      <div class="orbit orbit-venus"><div class="planet"></div></div>
+      <div class="orbit orbit-earth"><div class="planet"></div></div>
+      <div class="orbit orbit-mars"><div class="planet"></div></div>
+      <div class="orbit orbit-jupiter"><div class="planet"></div></div>
+      <div class="orbit orbit-saturn"><div class="planet"></div></div>
+      <div class="orbit orbit-uranus"><div class="planet"></div></div>
+      <div class="orbit orbit-neptune"><div class="planet"></div></div>
+    </div>
+    <div class="astronaut">👨‍🚀</div>
+    <div class="rocket">🚀</div>
+    <div class="satellite">🛰️</div>
+    <div class="comet"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>✨</span> বাংলাদেশের প্রথম AI-চালিত বাংলা মহাকাশ শিক্ষা প্ল্যাটফর্ম
+      </div>
+      <h1 class="hero-title">
+        মহাবিশ্ব ঘুরে দেখো <br>
+        <span class="grad">AI এর সাথে শেখো</span>
+      </h1>
+      <p class="hero-subtitle">
+        AstroVerse — বাচ্চাদের ও স্কুল পড়ুয়াদের জন্য এক অসাধারণ মহাকাশ শেখার দুনিয়া।<br>
+        গল্প শোনো, কুইজ খেলো, গ্রহ ঘুরে দেখো আর AI কে যা খুশি জিজ্ঞেস করো!
+      </p>
+      <div class="hero-buttons">
+        <button class="btn btn-primary" onclick="goPage('learning')">🚀 এখনই শেখা শুরু করুন</button>
+        <button class="btn btn-secondary" onclick="goPage('ai')">🤖 AI কে প্রশ্ন করুন</button>
+        <button class="btn btn-yellow" onclick="goPage('explore')">🪐 মহাকাশ ঘুরে দেখুন</button>
+        <button class="btn btn-purple" onclick="goPage('news')">📰 আজকের সংবাদ</button>
+        <button class="btn btn-secondary" onclick="goPage('things')">🎮 খেলতে খেলতে শিখুন</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num" id="stat-planets">8</div><div class="lbl">গ্রহ</div></div>
+        <div class="hero-stat"><div class="num" id="stat-stories">150+</div><div class="lbl">গল্প</div></div>
+        <div class="hero-stat"><div class="num" id="stat-quizzes">10</div><div class="lbl">কুইজ</div></div>
+        <div class="hero-stat"><div class="num" id="stat-xp">0</div><div class="lbl">আপনার XP</div></div>
+      </div>
+    </div>
+    <div class="scroll-ind">⬇️</div>
+  </div>
+
+  <!-- Quick Modules -->
+  <div class="container">
+    <h2 class="section-title">🚀 দ্রুত শুরু করুন</h2>
+    <p class="section-sub">যেকোনো মডিউলে ক্লিক করেই শিখতে শুরু করো</p>
+    <div class="cards-grid">
+      <div class="card card-blue" onclick="goPage('ai')">
+        <div class="card-emoji">🤖</div>
+        <div class="card-title">জিজ্ঞাসা — AI</div>
+        <div class="card-desc">মহাকাশ নিয়ে যেকোনো প্রশ্ন করো। AI বাংলায় উত্তর দেবে, গল্প বলবে, কুইজ বানাবে।</div>
+        <div class="card-cta">এখনই জিজ্ঞেস করুন →</div>
+      </div>
+      <div class="card card-yellow" onclick="goPage('learning'); showLearningTab('stories')">
+        <div class="card-emoji">📖</div>
+        <div class="card-title">গল্পের মহাকাশ</div>
+        <div class="card-desc">চাঁদ, সূর্য, মঙ্গল, গ্যালাক্সি — প্রতিটি বিষয়ে ১৫টি করে রূপকথার মতো গল্প।</div>
+        <div class="card-cta">গল্প শুনতে শুরু করুন →</div>
+      </div>
+      <div class="card card-purple" onclick="goPage('learning'); showLearningTab('quiz')">
+        <div class="card-emoji">📝</div>
+        <div class="card-title">মহাকাশ কুইজ</div>
+        <div class="card-desc">সৌরজগৎ, গ্রহ, নক্ষত্র — ১০টি বিষয়ে সহজ-মাঝারি-কঠিন লেভেলের কুইজ।</div>
+        <div class="card-cta">কুইজ খেলুন →</div>
+      </div>
+      <div class="card card-blue" onclick="goPage('learning'); showLearningTab('courses')">
+        <div class="card-emoji">📚</div>
+        <div class="card-title">কোর্স</div>
+        <div class="card-desc">প্রথম শিকি থেকে অভিজ্ঞ — ধাপে ধাপে মহাকাশ বিজ্ঞান শিখুন।</div>
+        <div class="card-cta">কোর্স দেখুন →</div>
+      </div>
+      <div class="card card-yellow" onclick="goPage('learning'); showLearningTab('achievements')">
+        <div class="card-emoji">🏆</div>
+        <div class="card-title">অর্জন</div>
+        <div class="card-desc">ব্যাজ আনলক করুন, XP জেতুন, লেভেল আপ হন — Junior Astronaut হয়ে উঠুন!</div>
+        <div class="card-cta">অর্জন দেখুন →</div>
+      </div>
+      <div class="card card-purple" onclick="goPage('explore')">
+        <div class="card-emoji">🪐</div>
+        <div class="card-title">সৌরজগৎ ঘুরে দেখুন</div>
+        <div class="card-desc">৮টি গ্রহ, বামন গ্রহ, চাঁদ, নক্ষত্র, গ্যালাক্সি, ব্ল্যাকহোল — সবকিছু একসাথে।</div>
+        <div class="card-cta">এক্সপ্লোর করুন →</div>
+      </div>
+      <div class="card card-blue" onclick="goPage('news')">
+        <div class="card-emoji">📰</div>
+        <div class="card-title">মহাকাশ সংবাদ</div>
+        <div class="card-desc">NASA, ESA, ISRO, SpaceX — সবার সর্বশেষ খবর বাংলায়।</div>
+        <div class="card-cta">সংবাদ পড়ুন →</div>
+      </div>
+      <div class="card card-yellow" onclick="goPage('things')">
+        <div class="card-emoji">🎮</div>
+        <div class="card-title">খেলতে খেলতে শিখুন</div>
+        <div class="card-desc">গেমস, কালারিং, ধাঁধা, DIY রকেট, টেলিস্কোপ — মজার মজার কাজ।</div>
+        <div class="card-cta">খেলা শুরু করুন →</div>
+      </div>
+    </div>
+
+    <!-- Extra Feature Widgets -->
+    <h2 class="section-title mt-3">🌟 বিশেষ ফিচার</h2>
+    <p class="section-sub">AstroVerse এর এক্সক্লুসিভ টুলস</p>
+    <div class="widgets-grid">
+      <!-- ISS Tracker -->
+      <div class="widget">
+        <h4>🛰️ আন্তর্জাতিক মহাকাশ স্টেশন <span class="live">LIVE</span></h4>
+        <div class="iss-tracker">
+          <div class="iss-map"></div>
+          <div class="iss-dot" id="issDot"></div>
+        </div>
+        <div class="iss-info">
+          <span>অবস্থান: <strong id="issPos">—</strong></span>
+          <span>বেগ: <strong>27,600 কিমি/ঘণ্টা</strong></span>
+        </div>
+      </div>
+
+      <!-- Moon Phase -->
+      <div class="widget">
+        <h4>🌙 আজকের চাঁদ</h4>
+        <div class="moon-vis"><div class="moon-shadow" id="moonShadow"></div></div>
+        <div class="text-center">
+          <strong id="moonPhaseName">—</strong>
+          <p style="font-size:12px;color:var(--text-soft);margin-top:4px" id="moonPhaseDesc"></p>
+        </div>
+      </div>
+
+      <!-- Sunrise Sunset -->
+      <div class="widget">
+        <h4>☀️ সূর্যোদয় ও সূর্যাস্ত</h4>
+        <div class="sun-arc">
+          <div class="sun-arc-line"></div>
+          <div class="sun-arc-dot" id="sunDot"></div>
+        </div>
+        <div class="iss-info">
+          <span>🌅 উদয়: <strong>৫:২৮ AM</strong></span>
+          <span>🌇 অস্ত: <strong>৬:৩৪ PM</strong></span>
+        </div>
+      </div>
+
+      <!-- Daily Challenge -->
+      <div class="widget">
+        <h4>🧩 আজকের চ্যালেঞ্জ</h4>
+        <div class="challenge-card">
+          <div class="challenge-q" id="dailyQ">পৃথিবী থেকে সবচেয়ে কাছের গ্রহ কোনটি?</div>
+          <div class="challenge-options" id="dailyOpts"></div>
+        </div>
+      </div>
+
+      <!-- Streak -->
+      <div class="widget">
+        <h4>🔥 ডেইলি স্ট্রিক</h4>
+        <div class="streak-flame">🔥</div>
+        <div class="text-center">
+          <strong style="font-family:var(--font-display);font-size:1.5rem;color:var(--orange)" id="streakNum">0</strong>
+          <p style="font-size:12px;color:var(--text-soft)">দিন ধরে চালিয়ে যাচ্ছেন!</p>
+        </div>
+        <div class="streak-vis" id="streakVis"></div>
+      </div>
+
+      <!-- XP Level -->
+      <div class="widget">
+        <h4>🎖️ XP ও লেভেল</h4>
+        <div class="xp-display">
+          <div class="xp-num" id="xpNum">0 XP</div>
+          <p style="font-size:13px;color:var(--text-soft);margin:6px 0">
+            লেভেল <strong id="levelNum">1</strong> · <span id="levelName">Beginner Explorer</span>
+          </p>
+          <div class="profile-xp-bar"><div class="profile-xp-fill" id="xpFill" style="width:0%"></div></div>
+          <p style="font-size:11px;color:var(--text-muted)"><span id="xpToNext">100</span> XP এ পরবর্তী লেভেল</p>
+        </div>
+      </div>
+
+      <!-- On This Day -->
+      <div class="widget">
+        <h4>📅 আজকের দিনে মহাকাশে</h4>
+        <div class="otd-card" id="otdCard">
+          লোড হচ্ছে...
+        </div>
+      </div>
+
+      <!-- Night Sky -->
+      <div class="widget">
+        <h4>🔭 আজকের রাতের আকাশ</h4>
+        <div style="background:radial-gradient(ellipse at top,#1e3a8a,#0a1130);padding:16px;border-radius:var(--radius);margin-top:8px">
+          <div style="font-size:12px;color:#a8b8dd;margin-bottom:6px">🌃 ঢাকা থেকে দৃশ্যমান:</div>
+          <div id="nightSky" style="font-size:13px;color:#e8efff;line-height:1.8">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learning Roadmap -->
+    <h2 class="section-title mt-3">📜 লার্নিং রোডম্যাপ</h2>
+    <p class="section-sub">প্রথম শিকি থেকে অভিজ্ঞ — ধাপে ধাপে এগিয়ে যান</p>
+    <div class="cards-grid">
+      <div class="card card-blue" onclick="goPage('learning')">
+        <div class="card-emoji">🌱</div>
+        <div class="card-title">প্রথম শিকি (Beginner)</div>
+        <div class="card-desc">সৌরজগৎ কি? গ্রহ কাকে বলে? সূর্য ও চাঁদ সম্পর্কে প্রাথমিক ধারণা। ১৫+ গল্প ও ৩০+ কুইজ।</div>
+        <div class="card-cta">শুরু করুন →</div>
+      </div>
+      <div class="card card-yellow" onclick="goPage('learning')">
+        <div class="card-emoji">🌿</div>
+        <div class="card-title">মাঝারি (Intermediate)</div>
+        <div class="card-desc">নক্ষত্রের জন্ম-মৃত্যু, গ্যালাক্সি, নীহারিকা, ব্ল্যাকহোল। মহাকাশযান ও স্যাটেলাইট কীভাবে কাজ করে।</div>
+        <div class="card-cta">এগিয়ে যান →</div>
+      </div>
+      <div class="card card-purple" onclick="goPage('learning')">
+        <div class="card-emoji">🌳</div>
+        <div class="card-title">অভিজ্ঞ (Advanced)</div>
+        <div class="card-desc">NASA/ESA মিশন, জেমস ওয়েব টেলিস্কোপ, মহাবিশ্বের উৎপত্তি, ডার্ক ম্যাটার ও এক্সোপ্ল্যানেট।</div>
+        <div class="card-cta">দক্ষ হয়ে উঠুন →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LEARNING PAGE ============ -->
+<section class="page" id="page-learning">
+  <div class="page-header">
+    <h1>📚 শেখা শুরু করুন</h1>
+    <p>গল্প, কুইজ, AI, কোর্স আর অর্জন — সবকিছু এক জায়গায়। যেটা ইচ্ছা বেছে নিন।</p>
+  </div>
+  <div class="container">
+    <div class="sub-nav">
+      <button class="sub-nav-item active" data-ltab="ai" onclick="showLearningTab('ai')">🤖 জিজ্ঞাসা</button>
+      <button class="sub-nav-item" data-ltab="stories" onclick="showLearningTab('stories')">📖 গল্পের মহাকাশ</button>
+      <button class="sub-nav-item" data-ltab="quiz" onclick="showLearningTab('quiz')">📝 মহাকাশ কুইজ</button>
+      <button class="sub-nav-item" data-ltab="courses" onclick="showLearningTab('courses')">📚 কোর্স</button>
+      <button class="sub-nav-item" data-ltab="achievements" onclick="showLearningTab('achievements')">🏆 অর্জন</button>
+    </div>
+
+    <!-- AI Tab -->
+    <div class="ltab" id="ltab-ai">
+      <div class="ai-wrap">
+        <div class="ai-main">
+          <div class="ai-header">
+            <div class="avatar">🤖</div>
+            <div class="info">
+              <h3>AstroVerse AI · Gemma</h3>
+              <p><span class="status">অনলাইন</span> · মহাকাশ বিষয়ে যেকোনো প্রশ্ন করুন</p>
+            </div>
+          </div>
+          <div class="ai-messages" id="aiMessages">
+            <div class="ai-msg bot">
+              <span class="bot-avatar">🤖</span> নমস্কার! আমি AstroVerse AI। মহাকাশ নিয়ে যেকোনো প্রশ্ন করুন — গ্রহ, নক্ষত্র, ব্ল্যাকহোল, রকেট, মহাকাশচারী, সবকিছু বাংলায় বুঝিয়ে দেব। 🚀
+            </div>
+          </div>
+          <div class="ai-actions">
+            <button class="ai-action-btn" onclick="aiAction('explain_simple')">সহজ করে বলো</button>
+            <button class="ai-action-btn" onclick="aiAction('explain_deep')">বিস্তারিত বলো</button>
+            <button class="ai-action-btn" onclick="aiAction('example')">উদাহরণ দাও</button>
+            <button class="ai-action-btn" onclick="aiAction('quiz')">কুইজ বানাও</button>
+            <button class="ai-action-btn" onclick="aiAction('story')">গল্প বলো</button>
+            <button class="ai-action-btn" onclick="aiAction('related')">সম্পর্কিত বিষয়</button>
+          </div>
+          <div class="ai-input">
+            <button class="voice-btn" onclick="voiceInput()" title="ভয়েস">🎤</button>
+            <input type="text" id="aiInput" placeholder="মহাকাশ নিয়ে প্রশ্ন লিখুন..." onkeydown="if(event.key==='Enter')sendAI()">
+            <button onclick="sendAI()" title="পাঠান">➤</button>
+          </div>
+        </div>
+        <div class="ai-side">
+          <div class="ai-side-card">
+            <h4>💡 সাজেস্টেড প্রশ্ন</h4>
+            <span class="chip" onclick="askSuggested('ব্ল্যাকহোল কি?')">ব্ল্যাকহোল কি?</span>
+            <span class="chip" onclick="askSuggested('সূর্য কেন জ্বলে?')">সূর্য কেন জ্বলে?</span>
+            <span class="chip" onclick="askSuggested('চাঁদ কি গ্রহ?')">চাঁদ কি গ্রহ?</span>
+            <span class="chip" onclick="askSuggested('মহাকাশচারীরা কী খায়?')">মহাকাশচারীরা কী খায়?</span>
+            <span class="chip" onclick="askSuggested('গ্যালাক্সি কি?')">গ্যালাক্সি কি?</span>
+            <span class="chip" onclick="askSuggested('আমরা কি একা?')">আমরা কি একা?</span>
+          </div>
+          <div class="ai-side-card">
+            <h4>ঘড়ি সাম্প্রতিক প্রশ্ন</h4>
+            <div id="recentQs">
+              <span class="chip" style="color:var(--text-muted)">এখনো কোনো প্রশ্ন করা হয়নি</span>
+            </div>
+          </div>
+          <div class="ai-side-card">
+            <h4>📊 পরিসংখ্যান</h4>
+            <div class="profile-stat"><span class="v" id="aiTotalQ">0</span>মোট প্রশ্ন</div>
+            <div class="profile-stat mt-2"><span class="v" id="aiTotalAns">0</span>AI উত্তর</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stories Tab -->
+    <div class="ltab hidden" id="ltab-stories">
+      <h2 class="section-title">📖 গল্পের মহাকাশ</h2>
+      <p class="section-sub">১০টি বিষয়ে ১৫টি করে গল্প — শুনুন, পড়ুন, শিখুন</p>
+      <div class="story-list" id="storyList"></div>
+      <div class="story-viewer" id="storyViewer">
+        <div class="illustration" id="storyEmoji">🌕</div>
+        <h2 id="storyTitle">—</h2>
+        <div class="story-text" id="storyText">—</div>
+        <div class="story-controls">
+          <button class="btn btn-yellow" onclick="playStory()">🔊 শুনুন</button>
+          <button class="btn btn-secondary" onclick="pauseStory()">⏸ বিরতি</button>
+          <button class="btn btn-secondary" onclick="prevStory()">⬅ পূর্ববর্তী</button>
+          <button class="btn btn-secondary" onclick="nextStory()">➡ পরবর্তী</button>
+          <button class="btn btn-purple" onclick="askAboutStory()">🤖 এই গল্প সম্পর্কে প্রশ্ন করুন</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz Tab -->
+    <div class="ltab hidden" id="ltab-quiz">
+      <h2 class="section-title">📝 মহাকাশ কুইজ</h2>
+      <p class="section-sub">১০টি বিষয়ে সহজ-মাঝারি-কঠিন লেভেলে কুইজ — সঠিক উত্তরে XP জেতুন</p>
+      <div class="quiz-grid" id="quizGrid"></div>
+    </div>
+
+    <!-- Courses Tab -->
+    <div class="ltab hidden" id="ltab-courses">
+      <h2 class="section-title">📚 মহাকাশ কোর্স</h2>
+      <p class="section-sub">ধাপে ধাপে শিখুন — প্রতিটি কোর্সে ভিডিও, গল্প, কুইজ ও সার্টিফিকেট</p>
+      <div class="cards-grid">
+        <div class="card card-blue" onclick="startCourse('solar')">
+          <div class="card-emoji">☀️</div>
+          <div class="card-title">সৌরজগৎ পরিচিতি</div>
+          <div class="card-desc">৮টি গ্রহ, বামন গ্রহ, ধূমকেতু, গ্রহাণু — সবার পরিচিতি। ৬টি লেসন, ১২টি কুইজ।</div>
+          <div class="card-cta">শুরু করুন →</div>
+        </div>
+        <div class="card card-yellow" onclick="startCourse('stars')">
+          <div class="card-emoji">⭐</div>
+          <div class="card-title">নক্ষত্রের জীবন</div>
+          <div class="card-desc">নক্ষত্রের জন্ম, জীবন, মৃত্যু — সাদা বামন থেকে ব্ল্যাকহোল। ৮টি লেসন।</div>
+          <div class="card-cta">শুরু করুন →</div>
+        </div>
+        <div class="card card-purple" onclick="startCourse('galaxies')">
+          <div class="card-emoji">🌌</div>
+          <div class="card-title">গ্যালাক্সি ও মহাবিশ্ব</div>
+          <div class="card-desc">আমাদের ছায়াপথ, অন্যান্য গ্যালাক্সি, মহাজাগতিক দূরত্ব ও মহাবিশ্বের উৎপত্তি।</div>
+          <div class="card-cta">শুরু করুন →</div>
+        </div>
+        <div class="card card-blue" onclick="startCourse('rockets')">
+          <div class="card-emoji">🚀</div>
+          <div class="card-title">রকেট ও মহাকাশযান</div>
+          <div class="card-desc">রকেট কীভাবে কাজ করে, স্যাটেলাইট, মহাকাশ স্টেশন ও মহাকাশ অভিযান।</div>
+          <div class="card-cta">শুরু করুন →</div>
+        </div>
+        <div class="card card-yellow" onclick="startCourse('astronauts')">
+          <div class="card-emoji">👨‍🚀</div>
+          <div class="card-title">মহাকাশচারী হওয়ার গল্প</div>
+          <div class="card-desc">মহাকাশচারীদের জীবন, প্রশিক্ষণ, খাবার, ঘুম — সবকিছু।</div>
+          <div class="card-cta">শুরু করুন →</div>
+        </div>
+        <div class="card card-purple" onclick="startCourse('telescopes')">
+          <div class="card-emoji">🔭</div>
+          <div class="card-title">টেলিস্কোপ ও পর্যবেক্ষণ</div>
+          <div class="card-desc">হাবল, জেমস ওয়েব, চাঁদের আলো ও রাতের আকাশ দেখার উপায়।</div>
+          <div class="card-cta">শুরু করুন →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Achievements Tab -->
+    <div class="ltab hidden" id="ltab-achievements">
+      <h2 class="section-title">🏆 অর্জন ব্যাজ</h2>
+      <p class="section-sub">৭টি বিশেষ ব্যাজ আনলক করুন — XP জেতুন, লেভেল আপ হন</p>
+      <div class="achievements-grid" id="achievementsGrid"></div>
+    </div>
+  </div>
+</section>
+<!-- ============ EXPLORE PAGE ============ -->
+<section class="page" id="page-explore">
+  <div class="page-header">
+    <h1>🪐 মহাকাশ ঘুরে দেখুন</h1>
+    <p>সৌরজগৎ, গ্রহ, চাঁদ, নক্ষত্র, গ্যালাক্সি, ব্ল্যাকহোল — সবকিছু এক ক্লিকে</p>
+  </div>
+  <div class="container">
+    <div class="global-search">
+      <input type="text" placeholder="🔍 গ্রহ, নক্ষত্র বা গ্যালাক্সি খুঁজুন..." oninput="searchExplore(this.value)">
+      <span class="icon">🪐</span>
+      <div class="search-results" id="exploreResults"></div>
+    </div>
+
+    <div class="sub-nav">
+      <button class="sub-nav-item active" data-etab="solar" onclick="showExploreTab('solar')">☀️ সৌরজগৎ</button>
+      <button class="sub-nav-item" data-etab="planets" onclick="showExploreTab('planets')">🪐 গ্রহ</button>
+      <button class="sub-nav-item" data-etab="moons" onclick="showExploreTab('moons')">🌕 চাঁদ</button>
+      <button class="sub-nav-item" data-etab="stars" onclick="showExploreTab('stars')">⭐ নক্ষত্র</button>
+      <button class="sub-nav-item" data-etab="galaxies" onclick="showExploreTab('galaxies')">🌌 গ্যালাক্সি</button>
+      <button class="sub-nav-item" data-etab="blackholes" onclick="showExploreTab('blackholes')">⚫ ব্ল্যাকহোল</button>
+      <button class="sub-nav-item" data-etab="rockets" onclick="showExploreTab('rockets')">🚀 রকেট</button>
+      <button class="sub-nav-item" data-etab="missions" onclick="showExploreTab('missions')">🛰️ মিশন</button>
+    </div>
+
+    <!-- Solar system map -->
+    <div class="etab" id="etab-solar">
+      <h2 class="section-title">🗺️ সৌরজগৎ মানচিত্র</h2>
+      <p class="section-sub">সূর্য থেকে নেপচুন পর্যন্ত — ক্লিক করে যেকোনো গ্রহ সম্পর্কে জানুন</p>
+      <div class="planet-grid" id="planetGrid"></div>
+    </div>
+
+    <div class="etab hidden" id="etab-planets">
+      <h2 class="section-title">🪐 গ্রহসমূহ</h2>
+      <p class="section-sub">আটটি গ্রহের পরিচিতি</p>
+      <div class="planet-grid" id="planetGrid2"></div>
+    </div>
+
+    <div class="etab hidden" id="etab-moons">
+      <h2 class="section-title">🌕 চাঁদসমূহ</h2>
+      <p class="section-sub">সৌরজগতের বিখ্যাত চাঁদ</p>
+      <div class="cards-grid">
+        <div class="card card-yellow" onclick="openPlanetModal('moon')">
+          <div class="card-emoji">🌕</div>
+          <div class="card-title">চাঁদ (Earth's Moon)</div>
+          <div class="card-desc">পৃথিবীর একমাত্র প্রাকৃতিক উপগ্রহ। ব্যাস ৩,৪৭৪ কিমি।</div>
+        </div>
+        <div class="card card-blue" onclick="openPlanetModal('titan')">
+          <div class="card-emoji">🟠</div>
+          <div class="card-title">টাইটান</div>
+          <div class="card-desc">শনির সবচেয়ে বড় চাঁদ। বায়ুমণ্ডল আছে এমন কয়েকটি চাঁদের একটি।</div>
+        </div>
+        <div class="card card-purple" onclick="openPlanetModal('europa')">
+          <div class="card-emoji">⚪</div>
+          <div class="card-title">ইউরোপা</div>
+          <div class="card-desc">বৃহস্পতির চাঁদ। বরফে ঢাকা পৃষ্ঠের নিচে তরল জলের মহাসাগর আছে।</div>
+        </div>
+        <div class="card card-yellow" onclick="openPlanetModal('ganymede')">
+          <div class="card-emoji">🟤</div>
+          <div class="card-title">গ্যানিমিড</div>
+          <div class="card-desc">সৌরজগতের সবচেয়ে বড় চাঁদ — বুধ গ্রহের চেয়েও বড়!</div>
+        </div>
+        <div class="card card-blue" onclick="openPlanetModal('io')">
+          <div class="card-emoji">🌋</div>
+          <div class="card-title">আইও</div>
+          <div class="card-desc">সৌরজগতের সবচেয়ে আগ্নেয়গিরিপূর্ণ বস্তু — বৃহস্পতির চাঁদ।</div>
+        </div>
+        <div class="card card-purple" onclick="openPlanetModal('enceladus')">
+          <div class="card-emoji">❄️</div>
+          <div class="card-title">এনসেলাডাস</div>
+          <div class="card-desc">শনির ছোট চাঁদ — মহাকাশে বরফের ফোয়ারা ছোড়ে!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="etab hidden" id="etab-stars">
+      <h2 class="section-title">⭐ নক্ষত্র</h2>
+      <p class="section-sub">নক্ষত্রের জীবন ও প্রকারভেদ</p>
+      <div class="cards-grid">
+        <div class="card card-yellow" onclick="openPlanetModal('sun-star')">
+          <div class="card-emoji">☀️</div>
+          <div class="card-title">সূর্য</div>
+          <div class="card-desc">আমাদের সবচেয়ে কাছের নক্ষত্র — G-টাইপ মেইন সিকোয়েন্স নক্ষত্র।</div>
+        </div>
+        <div class="card card-blue" onclick="openPlanetModal('sirius')">
+          <div class="card-emoji">✨</div>
+          <div class="card-title">সিরিয়াস</div>
+          <div class="card-desc">রাতের আকাশের সবচেয়ে উজ্জ্বল নক্ষত্র — কুকুর তারা।</div>
+        </div>
+        <div class="card card-purple" onclick="openPlanetModal('betelgeuse')">
+          <div class="card-emoji">🔴</div>
+          <div class="card-title">বেটেলজিউস</div>
+          <div class="card-desc">লাল অতিদানব নক্ষত্র — যেকোনো সময় সুপারনোভা হতে পারে।</div>
+        </div>
+        <div class="card card-yellow" onclick="openPlanetModal('polaris')">
+          <div class="card-emoji">🌟</div>
+          <div class="card-title">পোলারিস (মেরু তারা)</div>
+          <div class="card-desc">উত্তর মেরুর নক্ষত্র — হাজার বছর ধরে দিক নির্দেশ করে।</div>
+        </div>
+        <div class="card card-blue" onclick="openPlanetModal('proxima')">
+          <div class="card-emoji">🔭</div>
+          <div class="card-title">প্রক্সিমা সেন্টাউরি</div>
+          <div class="card-desc">সূর্যের পর সবচেয়ে কাছের নক্ষত্র — ৪.২৪ আলোকবর্ষ দূরে।</div>
+        </div>
+        <div class="card card-purple" onclick="openPlanetModal('neutron')">
+          <div class="card-emoji">⚪</div>
+          <div class="card-title">নিউট্রন স্টার</div>
+          <div class="card-desc">অত্যন্ত ঘন নক্ষত্রের অবশিষ্টাংশ — এক চা চামচে এক পর্বতের ওজন!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="etab hidden" id="etab-galaxies">
+      <h2 class="section-title">🌌 গ্যালাক্সি</h2>
+      <p class="section-sub">ছায়াপথের দুনিয়া</p>
+      <div class="cards-grid">
+        <div class="card card-purple" onclick="openPlanetModal('milkyway')">
+          <div class="card-emoji">🌌</div>
+          <div class="card-title">ছায়াপথ (Milky Way)</div>
+          <div class="card-desc">আমাদের গ্যালাক্সি — ১০০-৪০০ বিলিয়ন নক্ষত্র নিয়ে গঠিত।</div>
+        </div>
+        <div class="card card-yellow" onclick="openPlanetModal('andromeda')">
+          <div class="card-emoji">🌀</div>
+          <div class="card-title">অ্যান্ড্রোমেডা</div>
+          <div class="card-desc">আমাদের সবচেয়ে কাছের বড় গ্যালাক্সি — ৪.৫ বিলিয়ন বছরে মিলবে।</div>
+        </div>
+        <div class="card card-blue" onclick="openPlanetModal('magellanic')">
+          <div class="card-emoji">✨</div>
+          <div class="card-title">ম্যাজেলানিক ক্লাউড</div>
+          <div class="card-desc">ছায়াপথের দুটি বামন গ্যালাক্সি সঙ্গী।</div>
+        </div>
+        <div class="card card-purple" onclick="openPlanetModal('whirlpool')">
+          <div class="card-emoji">🌀</div>
+          <div class="card-title">হোয়ার্লপুল গ্যালাক্সি</div>
+          <div class="card-desc">সুন্দর সর্পিল গ্যালাক্সি — মেসিয়ে ৫১।</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="etab hidden" id="etab-blackholes">
+      <h2 class="section-title">⚫ ব্ল্যাকহোল</h2>
+      <p class="section-sub">মহাবিশ্বের সবচেয়ে রহস্যময় বস্তু</p>
+      <div class="cards-grid">
+        <div class="card card-purple" onclick="openPlanetModal('sgrA')">
+          <div class="card-emoji">⚫</div>
+          <div class="card-title">স্যাজিটারিয়াস A*</div>
+          <div class="card-desc">ছায়াপথের কেন্দ্রে থাকা অতিবৃহৎ ব্ল্যাকহোল।</div>
+        </div>
+        <div class="card card-blue" onclick="openPlanetModal('m87')">
+          <div class="card-emoji">🕳️</div>
+          <div class="card-title">M87*</div>
+          <div class="card-desc">প্রথম ব্ল্যাকহোল যার ছবি তোলা হয়েছে (২০১৯)।</div>
+        </div>
+        <div class="card card-yellow" onclick="openPlanetModal('cygnus')">
+          <div class="card-emoji">💫</div>
+          <div class="card-title">সিগনাস X-1</div>
+          <div class="card-desc">প্রথম নিশ্চিত স্টেলার ব্ল্যাকহোল।</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="etab hidden" id="etab-rockets">
+      <h2 class="section-title">🚀 রকেট ও মহাকাশযান</h2>
+      <p class="section-sub">মানুষের তৈরি মহাকাশ যান</p>
+      <div class="cards-grid">
+        <div class="card card-blue" onclick="openPlanetModal('falcon9')">
+          <div class="card-emoji">🚀</div>
+          <div class="card-title">Falcon 9</div>
+          <div class="card-desc">SpaceX এর পুনঃব্যবহারযোগ্য রকেট — প্রথম স্টেজ ফিরে আসে।</div>
+        </div>
+        <div class="card card-yellow" onclick="openPlanetModal('starship')">
+          <div class="card-emoji">🛸</div>
+          <div class="card-title">স্টারশিপ</div>
+          <div class="card-desc">মঙ্গল অভিযানের জন্য SpaceX এর সবচেয়ে বড় রকেট।</div>
+        </div>
+        <div class="card card-purple" onclick="openPlanetModal('sls')">
+          <div class="card-emoji">🚀</div>
+          <div class="card-title">SLS</div>
+          <div class="card-desc">NASA এর স্পেস লঞ্চ সিস্টেম — আর্টেমিস মিশনে ব্যবহৃত।</div>
+        </div>
+        <div class="card card-blue" onclick="openPlanetModal('iss-station')">
+          <div class="card-emoji">🛰️</div>
+          <div class="card-title">আন্তর্জাতিক মহাকাশ স্টেশন</div>
+          <div class="card-desc">পৃথিবীর ৪০০ কিমি উপরে ভাসমান গবেষণাগার।</div>
+        </div>
+        <div class="card card-yellow" onclick="openPlanetModal('hubble')">
+          <div class="card-emoji">🔭</div>
+          <div class="card-title">হাবল টেলিস্কোপ</div>
+          <div class="card-desc">১৯৯০ সাল থেকে মহাবিশ্বের অসাধারণ ছবি তুলছে।</div>
+        </div>
+        <div class="card card-purple" onclick="openPlanetModal('jwst')">
+          <div class="card-emoji">🌟</div>
+          <div class="card-title">জেমস ওয়েব টেলিস্কোপ</div>
+          <div class="card-desc">সবচেয়ে শক্তিশালী টেলিস্কোপ — মহাবিশ্বের সবচেয়ে দূরের ছবি।</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="etab hidden" id="etab-missions">
+      <h2 class="section-title">🛰️ বিখ্যাত মহাকাশ মিশন</h2>
+      <p class="section-sub">মানুষের অসাধারণ সব অভিযান</p>
+      <div class="cards-grid">
+        <div class="card card-yellow" onclick="openPlanetModal('apollo11')">
+          <div class="card-emoji">🌕</div>
+          <div class="card-title">অ্যাপোলো ১১</div>
+          <div class="card-desc">১৯৬৯ — প্রথম মানুষ চাঁদে পা রাখে (নিল আর্মস্ট্রং)।</div>
+        </div>
+        <div class="card card-blue" onclick="openPlanetModal('voyager')">
+          <div class="card-emoji">🛰️</div>
+          <div class="card-title">ভয়েজার ১ ও ২</div>
+          <div class="card-desc">১৯৭৭ — সৌরজগতের বাইরে পাঠানো প্রথম মহাকাশযান।</div>
+        </div>
+        <div class="card card-purple" onclick="openPlanetModal('curiosity')">
+          <div class="card-emoji">🔴</div>
+          <div class="card-title">কিউরিওসিটি রোভার</div>
+          <div class="card-desc">২০১২ থেকে মঙ্গলে গবেষণা করছে।</div>
+        </div>
+        <div class="card card-yellow" onclick="openPlanetModal('perseverance')">
+          <div class="card-emoji">🔬</div>
+          <div class="card-title">পার্সিভিয়ারেন্স</div>
+          <div class="card-desc">২০২১ — মঙ্গলে জীবনের চিহ্ন খুঁজছে।</div>
+        </div>
+        <div class="card card-blue" onclick="openPlanetModal('artemis')">
+          <div class="card-emoji">👩‍🚀</div>
+          <div class="card-title">আর্টেমিস মিশন</div>
+          <div class="card-desc">NASA — ২০২৬ সালে আবার মানুষ চাঁদে পাঠাবে।</div>
+        </div>
+        <div class="card card-purple" onclick="openPlanetModal('gaganyaan')">
+          <div class="card-emoji">🇮🇳</div>
+          <div class="card-title">গগনযান</div>
+          <div class="card-desc">ISRO — ভারতের প্রথম মানব মহাকাশ মিশন।</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NEWS PAGE ============ -->
+<section class="page" id="page-news">
+  <div class="page-header">
+    <h1>📰 মহাকাশ সংবাদ</h1>
+    <p>NASA, ESA, ISRO, SpaceX — সর্বশেষ খবর বাংলায়</p>
+  </div>
+  <div class="container">
+    <div class="sub-nav">
+      <button class="sub-nav-item active" data-ntab="latest" onclick="showNewsTab('latest')">🆕 সর্বশেষ</button>
+      <button class="sub-nav-item" data-ntab="nasa" onclick="showNewsTab('nasa')">🇺🇸 NASA</button>
+      <button class="sub-nav-item" data-ntab="esa" onclick="showNewsTab('esa')">🇪🇺 ESA</button>
+      <button class="sub-nav-item" data-ntab="isro" onclick="showNewsTab('isro')">🇮🇳 ISRO</button>
+      <button class="sub-nav-item" data-ntab="spacex" onclick="showNewsTab('spacex')">🚀 SpaceX</button>
+      <button class="sub-nav-item" data-ntab="moon" onclick="showNewsTab('moon')">🌕 চাঁদ</button>
+      <button class="sub-nav-item" data-ntab="mars" onclick="showNewsTab('mars')">🔴 মঙ্গল</button>
+      <button class="sub-nav-item" data-ntab="discovery" onclick="showNewsTab('discovery')">🔭 আবিষ্কার</button>
+    </div>
+    <div class="news-grid" id="newsGrid"></div>
+  </div>
+</section>
+
+<!-- ============ THINGS TO DO PAGE ============ -->
+<section class="page" id="page-things">
+  <div class="page-header">
+    <h1>🎮 খেলতে খেলতে শিখুন</h1>
+    <p>গেমস, কালারিং, ধাঁধা, DIY প্রজেক্ট — মজার মজার সব কাজ</p>
+  </div>
+  <div class="container">
+    <div class="activity-grid" id="activityGrid"></div>
+  </div>
+</section>
+
+<!-- ============ MULTIMEDIA PAGE ============ -->
+<section class="page" id="page-multimedia">
+  <div class="page-header">
+    <h1>🎥 মাল্টিমিডিয়া</h1>
+    <p>ছবি, ভিডিও, অ্যানিমেশন, ওয়ালপেপার — মহাকাশের দৃশ্যমান দুনিয়া</p>
+  </div>
+  <div class="container">
+    <div class="sub-nav">
+      <button class="sub-nav-item active" data-mtab="images" onclick="showMediaTab('images')">🖼️ ছবি</button>
+      <button class="sub-nav-item" data-mtab="videos" onclick="showMediaTab('videos')">🎬 ভিডিও</button>
+      <button class="sub-nav-item" data-mtab="animations" onclick="showMediaTab('animations')">✨ অ্যানিমেশন</button>
+      <button class="sub-nav-item" data-mtab="wallpapers" onclick="showMediaTab('wallpapers')">🖥️ ওয়ালপেপার</button>
+      <button class="sub-nav-item" data-mtab="sounds" onclick="showMediaTab('sounds')">🔊 স্পেস সাউন্ড</button>
+      <button class="sub-nav-item" data-mtab="infographics" onclick="showMediaTab('infographics')">📊 ইনফোগ্রাফিক্স</button>
+    </div>
+    <div class="media-grid" id="mediaGrid"></div>
+  </div>
+</section>
+<!-- ============ AI ASSISTANT PAGE ============ -->
+<section class="page" id="page-ai">
+  <div class="page-header">
+    <h1>🤖 AI সহায়ক — Gemma</h1>
+    <p>মহাকাশ নিয়ে যেকোনো প্রশ্ন — সহজ করে বুঝিয়ে দেবে AstroVerse AI</p>
+  </div>
+  <div class="container">
+    <div class="ai-wrap">
+      <div class="ai-main">
+        <div class="ai-header">
+          <div class="avatar">🤖</div>
+          <div class="info">
+            <h3>AstroVerse AI · Gemma</h3>
+            <p><span class="status">অনলাইন</span> · সবসময় প্রশ্ন করুন</p>
+          </div>
+        </div>
+        <div class="ai-messages" id="aiMessagesMain">
+          <div class="ai-msg bot">
+            <span class="bot-avatar">🤖</span> নমস্কার! আমি AstroVerse AI 🚀 মহাকাশ, গ্রহ, নক্ষত্র, ব্ল্যাকহোল, রকেট, মহাকাশচারী — যেকোনো বিষয়ে প্রশ্ন করুন। আমি বাংলায় উত্তর দেব, গল্প বলব, কুইজ বানাব — সবকিছু!
+          </div>
+        </div>
+        <div class="ai-actions">
+          <button class="ai-action-btn" onclick="aiAction('explain_simple')">সহজ করে বলো</button>
+          <button class="ai-action-btn" onclick="aiAction('explain_deep')">বিস্তারিত বলো</button>
+          <button class="ai-action-btn" onclick="aiAction('example')">উদাহরণ দাও</button>
+          <button class="ai-action-btn" onclick="aiAction('quiz')">কুইজ বানাও</button>
+          <button class="ai-action-btn" onclick="aiAction('story')">গল্প বলো</button>
+          <button class="ai-action-btn" onclick="aiAction('related')">সম্পর্কিত বিষয়</button>
+          <button class="ai-action-btn" onclick="aiAction('translate')">ইংরেজিতে অনুবাদ</button>
+        </div>
+        <div class="ai-input">
+          <button class="voice-btn" onclick="voiceInput()" title="ভয়েস">🎤</button>
+          <input type="text" id="aiInputMain" placeholder="যেমন: ব্ল্যাকহোল কি?" onkeydown="if(event.key==='Enter')sendAIMain()">
+          <button onclick="sendAIMain()" title="পাঠান">➤</button>
+        </div>
+      </div>
+      <div class="ai-side">
+        <div class="ai-side-card">
+          <h4>💡 সাজেস্টেড প্রশ্ন</h4>
+          <span class="chip" onclick="askSuggestedMain('ব্ল্যাকহোল কি?')">ব্ল্যাকহোল কি?</span>
+          <span class="chip" onclick="askSuggestedMain('সূর্য কেন জ্বলে?')">সূর্য কেন জ্বলে?</span>
+          <span class="chip" onclick="askSuggestedMain('মহাবিশ্ব কীভাবে তৈরি হলো?')">মহাবিশ্ব কীভাবে তৈরি হলো?</span>
+          <span class="chip" onclick="askSuggestedMain('চাঁদ কি গ্রহ?')">চাঁদ কি গ্রহ?</span>
+          <span class="chip" onclick="askSuggestedMain('মহাকাশচারীরা কী খায়?')">মহাকাশচারীরা কী খায়?</span>
+          <span class="chip" onclick="askSuggestedMain('গ্যালাক্সি কি?')">গ্যালাক্সি কি?</span>
+          <span class="chip" onclick="askSuggestedMain('গ্রহ কাকে বলে?')">গ্রহ কাকে বলে?</span>
+          <span class="chip" onclick="askSuggestedMain('নক্ষত্র কী?')">নক্ষত্র কী?</span>
+        </div>
+        <div class="ai-side-card">
+          <h4>🎯 AI ক্ষমতা</h4>
+          <span class="badge-tag">📋 পাঠ্য ইনপুট</span>
+          <span class="badge-tag">🎤 ভয়েস ইনপুট</span>
+          <span class="badge-tag">🔊 উত্তর শোনা</span>
+          <span class="badge-tag">📋 কপি</span>
+          <span class="badge-tag">📤 শেয়ার</span>
+          <span class="badge-tag">💡 সহজ ব্যাখ্যা</span>
+          <span class="badge-tag">🔬 গভীর ব্যাখ্যা</span>
+          <span class="badge-tag">📝 কুইজ তৈরি</span>
+          <span class="badge-tag">📖 গল্প বলা</span>
+          <span class="badge-tag">🌍 ইংরেজি অনুবাদ</span>
+          <span class="badge-tag">🔗 সম্পর্কিত বিষয়</span>
+          <span class="badge-tag">🔄 পুনঃউত্তর</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT PAGE ============ -->
+<section class="page" id="page-about">
+  <div class="container">
+    <div class="about-hero">
+      <span class="logo-big">🪐</span>
+      <h1>AstroVerse</h1>
+      <p><em>"Explore the Universe. Learn with AI."</em><br>বাংলাদেশের প্রথম AI-চালিত বাংলা মহাকাশ শিক্ষা প্ল্যাটফর্ম</p>
+    </div>
+
+    <h2 class="section-title text-center">আমাদের গল্প</h2>
+    <div style="max-width:800px;margin:0 auto 32px;line-height:1.85;color:var(--text-soft);font-size:1.05rem">
+      AstroVerse তৈরি হয়েছে একটি স্বপ্ন থেকে — বাংলাদেশের ছোট ছোট ছেলেমেয়েরা যেন তাদের মাতৃভাষায় মহাকাশ সম্পর্কে শিখতে পারে। আমরা বিশ্বাস করি, মহাবিশ্ব সবার জন্য — ভাষা যেন বাধা না হয়। NASA, ESA-এর মতো সংস্থার অসাধারণ কাজ থেকে অনুপ্রাণিত হয়ে আমরা তৈরি করেছি এক সম্পূর্ণ বাংলা মহাকাশ শিক্ষা জগৎ।
+      <br><br>
+      এখানে আছে রূপকথার মতো গল্প, মজার কুইজ, সারাক্ষণ AI সহায়ক, সৌরজগতের ইন্টারঅ্যাকটিভ মানচিত্র, রকেট ও গ্যালাক্সির গ্যালারি — সবকিছু বাচ্চাদের উপযোগী ভাষায় ও ছবিতে। শিখতে শিখতে অর্জন করুন ব্যাজ, জেতুন XP, হয়ে উঠুন Junior Astronaut!
+    </div>
+
+    <h2 class="section-title text-center">কেন AstroVerse?</h2>
+    <div class="about-features">
+      <div class="about-feature">
+        <div class="icon">🤖</div>
+        <h4>AI সহায়ক</h4>
+        <p>২৪/৭ বাংলায় উত্তর — কোনো প্রশ্নই বোকা নয়</p>
+      </div>
+      <div class="about-feature">
+        <div class="icon">📖</div>
+        <h4>গল্পের মহাকাশ</h4>
+        <p>১৫০+ রূপকথার মতো মহাকাশ গল্প</p>
+      </div>
+      <div class="about-feature">
+        <div class="icon">🎮</div>
+        <h4>মজার কুইজ</h4>
+        <p>সহজ-মাঝারি-কঠিন — সব লেভেলে</p>
+      </div>
+      <div class="about-feature">
+        <div class="icon">🪐</div>
+        <h4>ইন্টারঅ্যাকটিভ মানচিত্র</h4>
+        <p>সৌরজগৎ, গ্রহ, গ্যালাক্সি — সব এক ক্লিকে</p>
+      </div>
+      <div class="about-feature">
+        <div class="icon">🏆</div>
+        <h4>অর্জন সিস্টেম</h4>
+        <p>ব্যাজ, XP, লেভেল — শেখা হোক মজার</p>
+      </div>
+      <div class="about-feature">
+        <div class="icon">🌐</div>
+        <h4>১০০% বাংলা</h4>
+        <p>মাতৃভাষায় শেখা — সবচেয়ে সহজ</p>
+      </div>
+      <div class="about-feature">
+        <div class="icon">🌗</div>
+        <h4>রিয়েল-টাইম টুলস</h4>
+        <p>ISS ট্র্যাকার, চাঁদের দশা, সূর্যোদয়</p>
+      </div>
+      <div class="about-feature">
+        <div class="icon">🌙</div>
+        <h4>শিশু-বান্ধব</h4>
+        <p>ডিজনি-স্টাইল ইলাস্ট্রেশন, নিরাপদ কনটেন্ট</p>
+      </div>
+    </div>
+
+    <h2 class="section-title text-center mt-3">প্রেরণা</h2>
+    <div style="max-width:800px;margin:0 auto 32px;text-align:center;color:var(--text-soft);font-size:1rem;line-height:1.8">
+      আমরা ESA Kids, NASA Space Place, Duolingo ও ডিজনির শিক্ষামূলক কনটেন্ট দ্বারা অনুপ্রাণিত। তবে AstroVerse-এর সব কনটেন্ট সম্পূর্ণ মৌলিক ও বাংলায় — বাংলাদেশের শিক্ষার্থীদের জন্য বিশেষভাবে তৈরি।
+    </div>
+  </div>
+</section>
+
+<!-- ============ SETTINGS PAGE ============ -->
+<section class="page" id="page-settings">
+  <div class="page-header">
+    <h1>⚙️ সেটিংস</h1>
+    <p>আপনার পছন্দ অনুযায়ী AstroVerse সাজান</p>
+  </div>
+  <div class="container" style="max-width:760px">
+
+    <div class="settings-group">
+      <h3>🎨 থিম</h3>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">ডার্ক মোড</div>
+          <div class="desc">রাতের আকাশের মতো গাঢ় থিম</div>
+        </div>
+        <div class="toggle-switch" id="darkToggle" onclick="toggleTheme()"></div>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">থিম রং</div>
+          <div class="desc">মূল রং পরিবর্তন করুন</div>
+        </div>
+        <div class="option-pills">
+          <button class="option-pill active" onclick="setAccentColor('blue',this)">🔵 নীল</button>
+          <button class="option-pill" onclick="setAccentColor('purple',this)">🟣 বেগুনি</button>
+          <button class="option-pill" onclick="setAccentColor('orange',this)">🟠 কমলা</button>
+          <button class="option-pill" onclick="setAccentColor('green',this)">🟢 সবুজ</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h3>🌐 ভাষা</h3>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">প্রদর্শন ভাষা</div>
+          <div class="desc">মূল ভাষা নির্বাচন করুন</div>
+        </div>
+        <div class="option-pills">
+          <button class="option-pill active" onclick="setLang('bn',this)">বাংলা</button>
+          <button class="option-pill" onclick="setLang('en',this)">English</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h3>♿ অ্যাক্সেসিবিলিটি</h3>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">বড় ফন্ট</div>
+          <div class="desc">পড়তে সুবিধার জন্য ফন্ট বড় করুন</div>
+        </div>
+        <div class="toggle-switch" id="fontToggle" onclick="toggleLargeFont()"></div>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">অ্যানিমেশন বন্ধ</div>
+          <div class="desc">ধীর ডিভাইসের জন্য অ্যানিমেশন বন্ধ করুন</div>
+        </div>
+        <div class="toggle-switch" id="animToggle" onclick="toggleAnim()"></div>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">ভয়েস স্পিড</div>
+          <div class="desc">AI উত্তর শোনার গতি</div>
+        </div>
+        <div class="option-pills">
+          <button class="option-pill" onclick="setVoiceSpeed(0.7,this)">ধীর</button>
+          <button class="option-pill active" onclick="setVoiceSpeed(1,this)">সাধারণ</button>
+          <button class="option-pill" onclick="setVoiceSpeed(1.3,this)">দ্রুত</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h3>🔔 নোটিফিকেশন</h3>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">মহাকাশ সংবাদ</div>
+          <div class="desc">নতুন সংবাদে জানান</div>
+        </div>
+        <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">ডেইলি চ্যালেঞ্জ</div>
+          <div class="desc">প্রতিদিনের চ্যালেঞ্জ রিমাইন্ডার</div>
+        </div>
+        <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">স্ট্রিক রিমাইন্ডার</div>
+          <div class="desc">স্ট্রিক ধরে রাখতে মনে করিয়ে দিন</div>
+        </div>
+        <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h3>👤 অ্যাকাউন্ট</h3>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">প্রোফাইল দেখুন</div>
+          <div class="desc">আপনার অগ্রগতি ও অর্জন</div>
+        </div>
+        <button class="btn btn-secondary" onclick="goPage('profile')">প্রোফাইল →</button>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">সব ডেটা মুছুন</div>
+          <div class="desc">সব প্রগ্রেস ও সেটিংস রিসেট করুন</div>
+        </div>
+        <button class="btn btn-secondary" style="border-color:var(--red);color:var(--red)" onclick="resetAll()">রিসেট</button>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="lbl">লগআউট</div>
+          <div class="desc">অ্যাকাউন্ট থেকে বের হন</div>
+        </div>
+        <button class="btn btn-secondary" onclick="showToast('👋 লগআউট হয়েছে (ডেমো)','info')">লগআউট</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ PROFILE PAGE ============ -->
+<section class="page" id="page-profile">
+  <div class="page-header">
+    <h1>👤 আমার প্রোফাইল</h1>
+    <p>আপনার যাত্রা, অর্জন ও অগ্রগতি</p>
+  </div>
+  <div class="container">
+    <div class="profile-wrap">
+      <div>
+        <div class="profile-card">
+          <div class="profile-avatar">🧑‍🚀</div>
+          <div class="profile-name" id="profName">ছাত্র/ছাত্রী</div>
+          <div class="profile-level" id="profLevel">🥇 Beginner Explorer</div>
+          <div style="margin-top:8px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span>XP প্রোগ্রেস</span>
+              <span id="profXpText">0 / 100</span>
+            </div>
+            <div class="profile-xp-bar"><div class="profile-xp-fill" id="profXpFill" style="width:0%"></div></div>
+          </div>
+          <div class="profile-stats">
+            <div class="profile-stat"><span class="v" id="pStatXp">0</span>মোট XP</div>
+            <div class="profile-stat"><span class="v" id="pStatQuiz">0</span>কুইজ সঠিক</div>
+            <div class="profile-stat"><span class="v" id="pStatStory">0</span>গল্প পড়া</div>
+            <div class="profile-stat"><span class="v" id="pStatAi">0</span>AI প্রশ্ন</div>
+            <div class="profile-stat"><span class="v" id="pStatStreak">0</span>স্ট্রিক দিন</div>
+            <div class="profile-stat"><span class="v" id="pStatBadge">0/7</span>ব্যাজ</div>
+          </div>
+        </div>
+
+        <div class="ai-side-card mt-3" style="background:var(--bg-card)">
+          <h4>📜 সাম্প্রতিক কার্যকলাপ</h4>
+          <div id="recentActivity">
+            <span class="chip" style="color:var(--text-muted)">এখনো কোনো কার্যকলাপ নেই</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-title">🏆 অর্জন ব্যাজ</h2>
+        <p class="section-sub">আপনার আনলক করা ব্যাজসমূহ</p>
+        <div class="achievements-grid" id="profAchievements"></div>
+
+        <h2 class="section-title mt-3">📜 সার্টিফিকেট</h2>
+        <p class="section-sub">কুইজ সম্পন্ন করে সার্টিফিকেট অর্জন করুন</p>
+        <div class="certificate" id="certBox">
+          <h2>🌟 অভিনন্দন!</h2>
+          <p>এই সার্টিফিকেট প্রদান করা হলো</p>
+          <div class="name" id="certName">ছাত্র/ছাত্রী</div>
+          <p>মহাকাশ বিজ্ঞানে অসাধারণ অগ্রগতির জন্য</p>
+          <p style="margin-top:14px;font-size:13px;color:var(--text-soft)">📅 তারিখ: <span id="certDate">—</span></p>
+          <button class="btn btn-yellow mt-2" onclick="downloadCert()">📥 সার্টিফিকেট ডাউনলোড</button>
+        </div>
+
+        <h2 class="section-title mt-3">❤️ আমার ফেভারিট</h2>
+        <p class="section-sub">বুকমার্ক করা গল্প ও গ্রহ</p>
+        <div id="favList">
+          <p style="color:var(--text-muted);text-align:center;padding:20px">❌ এখনো কোনো ফেভারিট নেই। গ্রহ বা গল্পে ❤️ চাপুন।</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============ FLOATING AI ASSISTANT ============ -->
+<button class="fab-ai" onclick="toggleFab()" title="AI সহায়ক">
+  🤖<span class="badge" id="fabBadge">1</span>
+</button>
+
+<div class="fab-panel" id="fabPanel">
+  <div class="fab-header">
+    <div class="info">
+      <div class="avatar">🤖</div>
+      <div>
+        <h4>AstroVerse AI</h4>
+        <p>সবসময় আপনার সাথে</p>
+      </div>
+    </div>
+    <button class="fab-close" onclick="toggleFab()">×</button>
+  </div>
+  <div class="fab-quick">
+    <button class="qbtn" onclick="fabAction('explain')">📌 এই পেজ বুঝিয়ে দাও</button>
+    <button class="qbtn" onclick="fabAction('simple')">💡 সহজ করে বলো</button>
+    <button class="qbtn" onclick="fabAction('quiz')">📝 আমাকে কুইজ করো</button>
+    <button class="qbtn" onclick="fabAction('story')">📖 গল্প বলো</button>
+    <button class="qbtn" onclick="fabAction('summarize')">📋 সারসংক্ষেপ</button>
+    <button class="qbtn" onclick="fabAction('read')">🔊 পড়ে শোনাও</button>
+  </div>
+  <div class="fab-messages" id="fabMessages">
+    <div class="ai-msg bot">
+      <span class="bot-avatar">🤖</span> হাই! আমি AstroVerse AI 👋 যেকোনো প্রশ্ন করুন বা উপরের কুইক বাটন ব্যবহার করুন।
+    </div>
+  </div>
+  <div class="fab-input">
+    <input type="text" id="fabInput" placeholder="প্রশ্ন লিখুন..." onkeydown="if(event.key==='Enter')sendFab()">
+    <button onclick="sendFab()">➤</button>
+  </div>
+</div>
+
+<!-- ============ PLANET DETAIL MODAL ============ -->
+<div class="planet-modal" id="planetModal" onclick="if(event.target===this)closePlanetModal()">
+  <div class="planet-modal-content" id="planetModalContent">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<!-- ============ QUIZ MODAL ============ -->
+<div class="quiz-modal" id="quizModal" onclick="if(event.target===this)closeQuiz()">
+  <div class="quiz-box" id="quizBox">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="toast">
+  <span id="toastIcon">✅</span>
+  <span id="toastMsg">—</span>
+</div>
+
+<!-- ============ GLOBAL SEARCH OVERLAY ============ -->
+<div class="planet-modal" id="searchOverlay" onclick="if(event.target===this)closeSearch()" style="align-items:flex-start;padding-top:80px">
+  <div class="quiz-box" style="max-width:640px">
+    <h2 style="font-family:var(--font-display);margin-bottom:14px">🔍 গ্লোবাল সার্চ</h2>
+    <input type="text" id="globalSearchInput" placeholder="গ্রহ, গল্প, কুইজ, মিশন খুঁজুন..." oninput="globalSearch(this.value)" style="width:100%;padding:14px 18px;border-radius:30px;border:2px solid var(--border);background:var(--bg-soft);color:var(--text);font-family:inherit;font-size:15px;outline:none;margin-bottom:14px">
+    <div id="globalSearchResults" style="max-height:400px;overflow-y:auto"></div>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h5>🪐 AstroVerse</h5>
+      <p style="font-size:13px;color:var(--text-soft)">বাংলাদেশের প্রথম AI-চালিত বাংলা মহাকাশ শিক্ষা প্ল্যাটফর্ম। বাচ্চাদের জন্য, স্কুল পড়ুয়াদের জন্য — সবার জন্য।</p>
+    </div>
+    <div class="footer-col">
+      <h5>📚 শেখা</h5>
+      <a onclick="goPage('ai')">🤖 জিজ্ঞাসা</a>
+      <a onclick="goPage('learning');showLearningTab('stories')">📖 গল্প</a>
+      <a onclick="goPage('learning');showLearningTab('quiz')">📝 কুইজ</a>
+      <a onclick="goPage('learning');showLearningTab('courses')">📚 কোর্স</a>
+      <a onclick="goPage('learning');showLearningTab('achievements')">🏆 অর্জন</a>
+    </div>
+    <div class="footer-col">
+      <h5>🪐 ঘুরে দেখুন</h5>
+      <a onclick="goPage('explore');showExploreTab('planets')">🪐 গ্রহ</a>
+      <a onclick="goPage('explore');showExploreTab('moons')">🌕 চাঁদ</a>
+      <a onclick="goPage('explore');showExploreTab('stars')">⭐ নক্ষত্র</a>
+      <a onclick="goPage('explore');showExploreTab('galaxies')">🌌 গ্যালাক্সি</a>
+      <a onclick="goPage('explore');showExploreTab('blackholes')">⚫ ব্ল্যাকহোল</a>
+    </div>
+    <div class="footer-col">
+      <h5>📰 আরও</h5>
+      <a onclick="goPage('news')">📰 সংবাদ</a>
+      <a onclick="goPage('things')">🎮 খেলা</a>
+      <a onclick="goPage('multimedia')">🎥 মাল্টিমিডিয়া</a>
+      <a onclick="goPage('about')">ℹ️ পরিচিতি</a>
+      <a onclick="goPage('settings')">⚙️ সেটিংস</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© ২০২৬ AstroVerse · Explore the Universe. Learn with AI. 🚀</p>
+    <p style="margin-top:6px">❤️ দিয়ে তৈরি বাংলাদেশের বাচ্চাদের জন্য</p>
+  </div>
+</footer>
+<!-- PLACEHOLDER: SCRIPT -->
+</body>
+</html>
